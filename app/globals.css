@@ -28,6 +28,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Kırmızı-Beyaz-Gri Tema */
+:root {
+  --red-primary: #dc2626;
+  --red-hover: #b91c1c;
+  --red-light: #fee2e2;
+  --gray-light: #f3f4f6;
+  --gray-medium: #9ca3af;
+  --gray-dark: #374151;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

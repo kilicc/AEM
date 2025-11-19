@@ -36,11 +36,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">AEM - Giriş Yap</CardTitle>
-          <CardDescription className="text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-xl">
+        <CardHeader className="text-center pb-4">
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/logo-aem.png" 
+              alt="AEM Logo" 
+              className="h-16 w-auto"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+              }}
+            />
+          </div>
+          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Giriş Yap</CardTitle>
+          <CardDescription className="text-center mt-2">
             Saha İş Takip ve Depo Yönetim Sistemi
           </CardDescription>
         </CardHeader>
@@ -77,7 +88,11 @@ export default function LoginPage() {
                 placeholder="••••••••"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-red-600 hover:bg-red-700 text-white h-12 font-semibold" 
+              disabled={loading}
+            >
               {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
             </Button>
           </form>

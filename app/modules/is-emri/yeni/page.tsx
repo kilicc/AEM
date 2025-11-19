@@ -34,14 +34,21 @@ export default async function NewWorkOrderPage() {
 
   return (
     <Layout>
-      <div className="px-4 py-6 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Yeni İş Emri Oluştur</h1>
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Yeni İş Emri Oluştur</h1>
+              <p className="text-gray-600 dark:text-gray-400">Birden fazla çalışana iş emri atayabilirsiniz</p>
+            </div>
 
-        <CreateWorkOrderForm
-          customers={customers}
-          services={services}
-          users={users}
-        />
+            <CreateWorkOrderForm
+              customers={customers}
+              services={services}
+              users={users}
+            />
+          </div>
+        </div>
       </div>
     </Layout>
   )

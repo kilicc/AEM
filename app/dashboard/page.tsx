@@ -21,7 +21,8 @@ import {
   Plus,
   TrendingUp,
   Activity,
-  Package
+  Package,
+  Settings
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -71,16 +72,16 @@ export default async function DashboardPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
           {/* Header Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-2">
                   Hoş Geldiniz, {user.name}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
+                <p className="text-gray-600 dark:text-gray-400">
                   {new Date().toLocaleDateString('tr-TR', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -91,7 +92,7 @@ export default async function DashboardPage() {
               </div>
               {user.role === 'admin' && (
                 <Link href="/modules/is-emri/yeni">
-                  <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2">
+                  <Button className="bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 w-full sm:w-auto">
                     <Plus className="w-5 h-5" />
                     Yeni İş Emri
                   </Button>
@@ -101,30 +102,30 @@ export default async function DashboardPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
                 <div
                   key={index}
-                  className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                  className="group relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-                  <div className="relative p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
-                        <Icon className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-gray-50 dark:from-red-900/10 dark:to-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="p-2.5 rounded-lg bg-red-600 shadow-md">
+                        <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <div className={`px-3 py-1 rounded-full ${stat.bgColor} text-xs font-semibold text-gray-700 dark:text-gray-300`}>
-                        <TrendingUp className="w-4 h-4 inline mr-1" />
+                      <div className="px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                        <TrendingUp className="w-3 h-3 inline mr-1" />
                         +12%
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {stat.label}
                       </p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
                         {stat.value}
                       </p>
                     </div>
@@ -135,29 +136,29 @@ export default async function DashboardPage() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             {/* Recent Work Orders */}
             <div className="lg:col-span-2">
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-                <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+              <Card className="border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
+                <CardHeader className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-bold flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-blue-600" />
+                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                      <Activity className="w-5 h-5 text-red-600" />
                       Son İş Emirleri
                     </CardTitle>
                     <Link href="/modules/is-emri">
-                      <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
                         Tümünü Gör
                       </Button>
                     </Link>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
+                <CardContent className="p-4">
+                  <div className="space-y-3">
                     {workOrders.slice(0, 5).map((order: any) => {
                       const statusConfig = {
                         completed: { label: 'Tamamlandı', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', icon: CheckCircle2 },
-                        'in-progress': { label: 'İşlemde', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', icon: PlayCircle },
+                        'in-progress': { label: 'İşlemde', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', icon: PlayCircle },
                         waiting: { label: 'Beklemede', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', icon: Clock },
                       }
                       const config = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.waiting
@@ -169,28 +170,28 @@ export default async function DashboardPage() {
                           href={`/modules/is-emri/${order.id}`}
                           className="block group"
                         >
-                          <div className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all duration-200 bg-white dark:bg-slate-700/50">
+                          <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-600 hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-700/50">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
-                                    <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                <div className="flex items-center gap-2 mb-1">
+                                  <div className="p-1.5 rounded bg-red-50 dark:bg-red-900/30">
+                                    <Package className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
                                   </div>
                                   <div>
-                                    <p className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    <p className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                                       {order.customers?.name || 'Müşteri'}
                                     </p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">
                                       {order.services?.name || 'Hizmet'}
                                     </p>
                                   </div>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-500 ml-11">
+                                <p className="text-xs text-gray-500 dark:text-gray-500 ml-8">
                                   {formatDate(order.created_at)}
                                 </p>
                               </div>
-                              <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${config.color}`}>
-                                <StatusIcon className="w-3.5 h-3.5" />
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${config.color}`}>
+                                <StatusIcon className="w-3 h-3" />
                                 {config.label}
                               </span>
                             </div>
@@ -199,10 +200,10 @@ export default async function DashboardPage() {
                       )
                     })}
                     {workOrders.length === 0 && (
-                      <div className="text-center py-12">
-                        <ClipboardList className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                        <p className="text-gray-500 dark:text-gray-400 font-medium">Henüz iş emri yok</p>
-                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Yeni iş emri oluşturmak için butona tıklayın</p>
+                      <div className="text-center py-8">
+                        <ClipboardList className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                        <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Henüz iş emri yok</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Yeni iş emri oluşturmak için butona tıklayın</p>
                       </div>
                     )}
                   </div>
@@ -213,31 +214,37 @@ export default async function DashboardPage() {
             {/* Quick Actions */}
             {user.role === 'admin' && (
               <div>
-                <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
-                  <CardHeader className="border-b border-blue-200 dark:border-gray-700">
-                    <CardTitle className="text-xl font-bold flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-blue-600" />
+                <Card className="border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
+                  <CardHeader className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                      <Activity className="w-5 h-5 text-red-600" />
                       Hızlı İşlemler
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
                       <Link href="/modules/is-emri/yeni">
-                        <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 h-12 text-base font-semibold">
-                          <Plus className="w-5 h-5 mr-2" />
-                          Yeni İş Emri Oluştur
+                        <Button className="w-full bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg transition-all duration-200 h-11 text-sm font-semibold">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Yeni İş Emri
                         </Button>
                       </Link>
                       <Link href="/modules/musteri/yeni">
-                        <Button className="w-full bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-600 shadow-md hover:shadow-lg transition-all duration-200 h-12 text-base font-semibold">
-                          <Users className="w-5 h-5 mr-2" />
-                          Yeni Müşteri Ekle
+                        <Button className="w-full bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200 h-11 text-sm font-semibold">
+                          <Users className="w-4 h-4 mr-2" />
+                          Yeni Müşteri
                         </Button>
                       </Link>
                       <Link href="/modules/depo/yeni">
-                        <Button className="w-full bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-600 shadow-md hover:shadow-lg transition-all duration-200 h-12 text-base font-semibold">
-                          <Warehouse className="w-5 h-5 mr-2" />
-                          Yeni Depo Oluştur
+                        <Button className="w-full bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200 h-11 text-sm font-semibold">
+                          <Warehouse className="w-4 h-4 mr-2" />
+                          Yeni Depo
+                        </Button>
+                      </Link>
+                      <Link href="/modules/admin">
+                        <Button className="w-full bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200 h-11 text-sm font-semibold">
+                          <Settings className="w-4 h-4 mr-2" />
+                          Ayarlar
                         </Button>
                       </Link>
                     </div>
