@@ -1,7 +1,7 @@
 // Supabase bağlantı test scripti
 // Çalıştırma: node scripts/test-supabase-connection.js
 
-require('dotenv').config({ path: '.env.local' })
+require('dotenv').config({ path: '.env' })
 
 const { createClient } = require('@supabase/supabase-js')
 
