@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:supabase": "node scripts/test-supabase-connection.js",
-    "test:database": "node scripts/test-database-connection.js"
+    "test:database": "node scripts/test-database-connection.js",
+    "create:admin": "node scripts/create-admin-user.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
