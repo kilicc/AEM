@@ -29,23 +29,30 @@ export default async function NotificationsPage() {
 
   return (
     <Layout>
-      <div className="px-4 py-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Bildirim Yönetimi</h1>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">Bildirim Yönetimi</h1>
+            <p className="text-slate-600 dark:text-slate-400">Bildirim şablonları ve loglarını yönetin</p>
+          </div>
 
-        <Tabs defaultValue="logs" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="logs">Bildirim Geçmişi</TabsTrigger>
-            <TabsTrigger value="templates">Şablonlar</TabsTrigger>
-          </TabsList>
+          <div className="animate-fade-in">
+            <Tabs defaultValue="logs" className="space-y-4">
+              <TabsList className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <TabsTrigger value="logs">Bildirim Geçmişi</TabsTrigger>
+                <TabsTrigger value="templates">Şablonlar</TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="logs">
-            <NotificationLogsTable logs={logs} />
-          </TabsContent>
+              <TabsContent value="logs">
+                <NotificationLogsTable logs={logs} />
+              </TabsContent>
 
-          <TabsContent value="templates">
-            <NotificationTemplatesList templates={templates} />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="templates">
+                <NotificationTemplatesList templates={templates} />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </div>
     </Layout>
   )

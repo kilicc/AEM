@@ -141,15 +141,20 @@ export default async function WorkOrdersPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {user.role === 'admin' ? 'İş Emirleri' : 'İş Emirlerim'}
-            </h1>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8 flex items-center justify-between animate-fade-in">
+            <div>
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">
+                {user.role === 'admin' ? 'İş Emirleri' : 'İş Emirlerim'}
+              </h1>
+              <p className="text-slate-600 dark:text-slate-400">
+                {user.role === 'admin' ? 'Tüm iş emirlerini görüntüleyin ve yönetin' : 'Size atanan iş emirlerini görüntüleyin'}
+              </p>
+            </div>
             {user.role === 'admin' && (
               <Link href="/modules/is-emri/yeni">
-                <Button className="bg-red-600 hover:bg-red-700">
+                <Button className="bg-gradient-primary hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-200">
                   <Plus className="w-4 h-4 mr-2" />
                   Yeni İş Emri
                 </Button>
@@ -157,27 +162,29 @@ export default async function WorkOrdersPage() {
             )}
           </div>
 
-          <DataTable
-            title="İş Emri Listesi"
-            data={workOrders}
-            columns={columns}
-            searchable
-            searchKeys={['customers.name', 'services.name', 'users.name', 'status']}
-            filterable
-            filters={[
-              {
-                key: 'status',
-                label: 'Durum',
-                options: statusOptions,
-              },
-              {
-                key: 'priority',
-                label: 'Öncelik',
-                options: priorityOptions,
-              },
-            ]}
-            emptyMessage="Henüz iş emri bulunmuyor"
-          />
+          <div className="animate-fade-in">
+            <DataTable
+              title="İş Emri Listesi"
+              data={workOrders}
+              columns={columns}
+              searchable
+              searchKeys={['customers.name', 'services.name', 'users.name', 'status']}
+              filterable
+              filters={[
+                {
+                  key: 'status',
+                  label: 'Durum',
+                  options: statusOptions,
+                },
+                {
+                  key: 'priority',
+                  label: 'Öncelik',
+                  options: priorityOptions,
+                },
+              ]}
+              emptyMessage="Henüz iş emri bulunmuyor"
+            />
+          </div>
         </div>
       </div>
     </Layout>

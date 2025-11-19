@@ -64,7 +64,13 @@ export function DataTable<T extends { id: string }>({
       const searchLower = search.toLowerCase()
       result = result.filter((item) =>
         searchKeys.some((key) => {
-          const value = (item as any)[key]
+          // Handle nested keys like "customers.name"
+          const keys = key.split('.')
+          let value: any = item
+          for (const k of keys) {
+            value = value?.[k]
+            if (value === undefined || value === null) break
+          }
           return value && String(value).toLowerCase().includes(searchLower)
         })
       )
@@ -74,7 +80,16 @@ export function DataTable<T extends { id: string }>({
     if (filterable && filters.length > 0) {
       Object.entries(activeFilters).forEach(([key, value]) => {
         if (value) {
-          result = result.filter((item) => (item as any)[key] === value)
+          result = result.filter((item) => {
+            // Handle nested keys like "customers.name"
+            const keys = key.split('.')
+            let itemValue: any = item
+            for (const k of keys) {
+              itemValue = itemValue?.[k]
+              if (itemValue === undefined || itemValue === null) break
+            }
+            return itemValue === value
+          })
         }
       })
     }
@@ -127,10 +142,10 @@ export function DataTable<T extends { id: string }>({
   }
 
   return (
-    <Card className="border border-gray-200 dark:border-gray-700 shadow-lg">
-      <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <Card className="border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
+      <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">{title}</CardTitle>
+          <CardTitle className="text-xl font-bold text-slate-900 dark:text-slate-50">{title}</CardTitle>
           <div className="flex items-center gap-2">
             {onExport && (
               <Button variant="outline" size="sm" onClick={onExport}>
@@ -196,7 +211,7 @@ export function DataTable<T extends { id: string }>({
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <thead className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
               <tr>
                 {selectable && (
                   <th className="px-4 py-3 text-left">
@@ -204,15 +219,15 @@ export function DataTable<T extends { id: string }>({
                       type="checkbox"
                       checked={selected.length === filteredData.length && filteredData.length > 0}
                       onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                      className="w-4 h-4 text-red-600 border-slate-300 rounded focus:ring-red-500"
                     />
                   </th>
                 )}
                 {columns.map((column) => (
                   <th
                     key={column.key}
-                    className={`px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider ${
-                      column.sortable ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700' : ''
+                    className={`px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider ${
+                      column.sortable ? 'cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors' : ''
                     }`}
                     onClick={() => column.sortable && handleSort(column.key)}
                   >
@@ -228,12 +243,12 @@ export function DataTable<T extends { id: string }>({
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-700">
               {filteredData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={columns.length + (selectable ? 1 : 0)}
-                    className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                    className="px-4 py-12 text-center text-slate-500 dark:text-slate-400"
                   >
                     {emptyMessage}
                   </td>
@@ -242,7 +257,7 @@ export function DataTable<T extends { id: string }>({
                 filteredData.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors table-row"
                   >
                     {selectable && (
                       <td className="px-4 py-3">
@@ -250,12 +265,12 @@ export function DataTable<T extends { id: string }>({
                           type="checkbox"
                           checked={selected.includes(item.id)}
                           onChange={(e) => handleSelectItem(item.id, e.target.checked)}
-                          className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                          className="w-4 h-4 text-red-600 border-slate-300 rounded focus:ring-red-500"
                         />
                       </td>
                     )}
                     {columns.map((column) => (
-                      <td key={column.key} className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                      <td key={column.key} className="px-4 py-3 text-sm text-slate-900 dark:text-slate-100">
                         {column.render
                           ? column.render(item)
                           : String((item as any)[column.key] || '')}
@@ -269,7 +284,7 @@ export function DataTable<T extends { id: string }>({
         </div>
 
         {filteredData.length > 0 && (
-          <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
+          <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-600 dark:text-slate-400">
             Toplam {filteredData.length} kayıt gösteriliyor
             {selected.length > 0 && selectable && ` (${selected.length} seçili)`}
           </div>

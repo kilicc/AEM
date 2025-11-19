@@ -25,42 +25,44 @@ export default async function AdminServicesPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mb-6 flex items-center justify-between">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8 flex items-center justify-between animate-fade-in">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2 flex items-center gap-3">
                 <FileText className="w-8 h-8 text-red-600" />
                 Hizmet Yönetimi
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">Hizmet şablonlarını yönetin</p>
+              <p className="text-slate-600 dark:text-slate-400">Hizmet şablonlarını yönetin</p>
             </div>
-            <Button className="bg-red-600 hover:bg-red-700 text-white">
+            <Button className="bg-gradient-primary hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-200">
               <Plus className="w-4 h-4 mr-2" />
               Yeni Hizmet
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {services.map((service: any) => (
-              <Card key={service.id} className="border border-gray-200 dark:border-gray-700 shadow-md">
-                <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                  <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">{service.name}</CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {services.map((service: any, index: number) => (
+              <Card key={service.id} className="border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 card-hover bg-white dark:bg-slate-900" style={{ animationDelay: `${index * 50}ms` }}>
+                <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700">
+                  <CardTitle className="text-lg font-bold text-slate-900 dark:text-slate-50">{service.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 min-h-[3rem]">
                     {service.description || 'Açıklama yok'}
                   </p>
-                  <Button variant="outline" size="sm" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                     Düzenle
                   </Button>
                 </CardContent>
               </Card>
             ))}
             {services.length === 0 && (
-              <Card className="col-span-full border border-gray-200 dark:border-gray-700">
-                <CardContent className="pt-6 text-center text-gray-500 dark:text-gray-400">
-                  <p>Henüz hizmet bulunmuyor</p>
+              <Card className="col-span-full border border-slate-200 dark:border-slate-800 shadow-lg bg-white dark:bg-slate-900">
+                <CardContent className="pt-12 pb-12 text-center">
+                  <FileText className="w-16 h-16 text-slate-400 dark:text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">Henüz hizmet bulunmuyor</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm mt-2">Yeni bir hizmet eklemek için butona tıklayın</p>
                 </CardContent>
               </Card>
             )}

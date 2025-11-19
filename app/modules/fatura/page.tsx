@@ -109,28 +109,31 @@ export default async function InvoicesPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Faturalar</h1>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">Faturalar</h1>
+            <p className="text-slate-600 dark:text-slate-400">Tüm faturaları görüntüleyin ve yönetin</p>
           </div>
 
-          <DataTable
-            title="Fatura Listesi"
-            data={invoices}
-            columns={columns}
-            searchable
-            searchKeys={['invoice_number', 'customers.name']}
-            filterable
-            filters={[
-              {
-                key: 'status',
-                label: 'Durum',
-                options: statusOptions,
-              },
-            ]}
-            emptyMessage="Henüz fatura bulunmuyor"
-          />
+          <div className="animate-fade-in">
+            <DataTable
+              title="Fatura Listesi"
+              data={invoices}
+              columns={columns}
+              searchable
+              searchKeys={['invoice_number', 'customers.name']}
+              filterable
+              filters={[
+                {
+                  key: 'status',
+                  label: 'Durum',
+                  options: statusOptions,
+                },
+              ]}
+              emptyMessage="Henüz fatura bulunmuyor"
+            />
+          </div>
         </div>
       </div>
     </Layout>

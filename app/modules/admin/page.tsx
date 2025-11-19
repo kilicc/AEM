@@ -116,31 +116,31 @@ export default async function AdminSettingsPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Ayarlar</h1>
-            <p className="text-gray-600 dark:text-gray-400">Sistem ayarlarını yönetin</p>
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">Ayarlar</h1>
+            <p className="text-slate-600 dark:text-slate-400">Sistem ayarlarını yönetin</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {settingsMenu.map((item, index) => {
               const Icon = item.icon
               return (
-                <Link key={index} href={item.href}>
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader>
+                <Link key={index} href={item.href} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                  <Card className="border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer card-hover bg-white dark:bg-slate-900">
+                    <CardHeader className="pb-3">
                       <div className="flex items-center gap-4">
                         <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} shadow-lg`}>
                           <Icon className="w-6 h-6 text-white" />
                         </div>
-                        <div>
-                          <CardTitle className="text-lg font-bold">{item.title}</CardTitle>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg font-bold text-slate-900 dark:text-slate-50">{item.title}</CardTitle>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>
                     </CardContent>
                   </Card>
                 </Link>
