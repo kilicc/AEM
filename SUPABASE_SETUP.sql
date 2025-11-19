@@ -575,271 +575,220 @@ ALTER TABLE public.whatsapp_approved_templates ENABLE ROW LEVEL SECURITY;
 -- ============================================
 -- 7. RLS POLICIES - ANA TABLOLAR
 -- ============================================
+-- ÖNCE: Tüm mevcut policy'leri sil (eğer varsa)
+-- Bu sayede dosya tekrar çalıştırılabilir (idempotent)
+
+DO $$ 
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT schemaname, tablename, policyname 
+              FROM pg_policies 
+              WHERE schemaname = 'public') 
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', 
+                       r.policyname, r.schemaname, r.tablename);
+    END LOOP;
+END $$;
 
 -- Users Policies
+DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
 CREATE POLICY "Users can view own profile" ON public.users
   FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Admins can view all users" ON public.users;
 CREATE POLICY "Admins can view all users" ON public.users
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- Depots Policies
+DROP POLICY IF EXISTS "Admins can manage depots" ON public.depots;
 CREATE POLICY "Admins can manage depots" ON public.depots
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Products Policies
+DROP POLICY IF EXISTS "Admins can manage products" ON public.products;
 CREATE POLICY "Admins can manage products" ON public.products
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Users can view products" ON public.products;
 CREATE POLICY "Users can view products" ON public.products
   FOR SELECT USING (true);
 
 -- Tool Assignments Policies
+DROP POLICY IF EXISTS "Users can view own assignments" ON public.tool_assignments;
 CREATE POLICY "Users can view own assignments" ON public.tool_assignments
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Admins can manage assignments" ON public.tool_assignments;
 CREATE POLICY "Admins can manage assignments" ON public.tool_assignments
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Customers Policies
+DROP POLICY IF EXISTS "Admins can manage customers" ON public.customers;
 CREATE POLICY "Admins can manage customers" ON public.customers
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Users can view customers" ON public.customers;
 CREATE POLICY "Users can view customers" ON public.customers
   FOR SELECT USING (true);
 
 -- Work Orders Policies
+DROP POLICY IF EXISTS "Users can view assigned work orders" ON public.work_orders;
 CREATE POLICY "Users can view assigned work orders" ON public.work_orders
   FOR SELECT USING (
-    assigned_user_id = auth.uid() OR
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
+    assigned_user_id = auth.uid() OR public.is_admin()
   );
 
+DROP POLICY IF EXISTS "Admins can manage work orders" ON public.work_orders;
 CREATE POLICY "Admins can manage work orders" ON public.work_orders
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Users can update own work orders" ON public.work_orders;
 CREATE POLICY "Users can update own work orders" ON public.work_orders
   FOR UPDATE USING (assigned_user_id = auth.uid());
 
 -- Invoices Policies
+DROP POLICY IF EXISTS "Admins can manage invoices" ON public.invoices;
 CREATE POLICY "Admins can manage invoices" ON public.invoices
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- ============================================
 -- 8. RLS POLICIES - EXTENSION TABLOLAR
 -- ============================================
 
 -- Notification Logs
+DROP POLICY IF EXISTS "Users can view own notification logs" ON public.notification_logs;
 CREATE POLICY "Users can view own notification logs" ON public.notification_logs
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Admins can view all notification logs" ON public.notification_logs;
 CREATE POLICY "Admins can view all notification logs" ON public.notification_logs
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- Notification Templates
+DROP POLICY IF EXISTS "Admins can manage notification templates" ON public.notification_templates;
 CREATE POLICY "Admins can manage notification templates" ON public.notification_templates
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Notification Settings
+DROP POLICY IF EXISTS "Users can manage own notification settings" ON public.notification_settings;
 CREATE POLICY "Users can manage own notification settings" ON public.notification_settings
   FOR ALL USING (auth.uid() = user_id);
 
 -- Stock Alerts
+DROP POLICY IF EXISTS "Admins can manage stock alerts" ON public.stock_alerts;
 CREATE POLICY "Admins can manage stock alerts" ON public.stock_alerts
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Work Order Templates
+DROP POLICY IF EXISTS "Admins can manage work order templates" ON public.work_order_templates;
 CREATE POLICY "Admins can manage work order templates" ON public.work_order_templates
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Work Order Comments
+DROP POLICY IF EXISTS "Users can view work order comments" ON public.work_order_comments;
 CREATE POLICY "Users can view work order comments" ON public.work_order_comments
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can create work order comments" ON public.work_order_comments;
 CREATE POLICY "Users can create work order comments" ON public.work_order_comments
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Work Order History
+DROP POLICY IF EXISTS "Users can view work order history" ON public.work_order_history;
 CREATE POLICY "Users can view work order history" ON public.work_order_history
   FOR SELECT USING (true);
 
 -- Activity Logs
+DROP POLICY IF EXISTS "Admins can view activity logs" ON public.activity_logs;
 CREATE POLICY "Admins can view activity logs" ON public.activity_logs
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- ============================================
 -- 9. RLS POLICIES - EXTENSION 2 TABLOLAR
 -- ============================================
 
 -- Depot Transfers
+DROP POLICY IF EXISTS "Admins can manage depot transfers" ON public.depot_transfers;
 CREATE POLICY "Admins can manage depot transfers" ON public.depot_transfers
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Product Categories
+DROP POLICY IF EXISTS "Admins can manage product categories" ON public.product_categories;
 CREATE POLICY "Admins can manage product categories" ON public.product_categories
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Users can view product categories" ON public.product_categories;
 CREATE POLICY "Users can view product categories" ON public.product_categories
   FOR SELECT USING (true);
 
 -- Bulk Notifications
+DROP POLICY IF EXISTS "Admins can manage bulk notifications" ON public.bulk_notifications;
 CREATE POLICY "Admins can manage bulk notifications" ON public.bulk_notifications
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Scheduled Notifications
+DROP POLICY IF EXISTS "Users can manage own scheduled notifications" ON public.scheduled_notifications;
 CREATE POLICY "Users can manage own scheduled notifications" ON public.scheduled_notifications
   FOR ALL USING (auth.uid() = created_by OR auth.uid() = recipient_id);
 
+DROP POLICY IF EXISTS "Admins can view all scheduled notifications" ON public.scheduled_notifications;
 CREATE POLICY "Admins can view all scheduled notifications" ON public.scheduled_notifications
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- Customer Groups
+DROP POLICY IF EXISTS "Admins can manage customer groups" ON public.customer_groups;
 CREATE POLICY "Admins can manage customer groups" ON public.customer_groups
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Customer Special Days
+DROP POLICY IF EXISTS "Admins can manage customer special days" ON public.customer_special_days;
 CREATE POLICY "Admins can manage customer special days" ON public.customer_special_days
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- Invoice Templates
+DROP POLICY IF EXISTS "Admins can manage invoice templates" ON public.invoice_templates;
 CREATE POLICY "Admins can manage invoice templates" ON public.invoice_templates
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- User Sessions
+DROP POLICY IF EXISTS "Users can view own sessions" ON public.user_sessions;
 CREATE POLICY "Users can view own sessions" ON public.user_sessions
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Admins can view all sessions" ON public.user_sessions;
 CREATE POLICY "Admins can view all sessions" ON public.user_sessions
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- IP Restrictions
+DROP POLICY IF EXISTS "Admins can manage IP restrictions" ON public.ip_restrictions;
 CREATE POLICY "Admins can manage IP restrictions" ON public.ip_restrictions
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- User 2FA
+DROP POLICY IF EXISTS "Users can manage own 2FA" ON public.user_2fa;
 CREATE POLICY "Users can manage own 2FA" ON public.user_2fa
   FOR ALL USING (auth.uid() = user_id);
 
 -- WhatsApp Templates
+DROP POLICY IF EXISTS "Admins can manage WhatsApp templates" ON public.whatsapp_approved_templates;
 CREATE POLICY "Admins can manage WhatsApp templates" ON public.whatsapp_approved_templates
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  FOR ALL USING (public.is_admin());
 
 -- ============================================
 -- 10. FUNCTIONS
 -- ============================================
+
+-- Helper function to check if user is admin (bypasses RLS to avoid infinite recursion)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.users
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
