@@ -35,7 +35,7 @@ export default async function AdminExcelPage() {
               <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
                   <Upload className="w-5 h-5 text-red-600" />
-                  Excel'den İçe Aktar
+                  Excel&apos;den İçe Aktar
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
@@ -54,7 +54,7 @@ export default async function AdminExcelPage() {
               <CardHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
                   <Download className="w-5 h-5 text-red-600" />
-                  Excel'e Dışa Aktar
+                  Excel&apos;e Dışa Aktar
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
