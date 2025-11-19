@@ -1,7 +1,7 @@
 import { Layout } from '@/components/layout/Layout'
 import { getCurrentUser } from '@/modules/auth/actions'
 import { redirect } from 'next/navigation'
-import { getActivityLogs } from '@/modules/admin/statistics'
+import { getActivityLogs } from '@/modules/admin/activity-logs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Activity } from 'lucide-react'
 
@@ -18,8 +18,13 @@ export default async function AdminActivityPage() {
     redirect('/dashboard')
   }
 
-  const logsResult = await getActivityLogs({ limit: 50 })
-  const logs = logsResult.data || []
+  let logs: any[] = []
+  try {
+    const logsResult = await getActivityLogs({ limit: 50 })
+    logs = logsResult.data || []
+  } catch (error) {
+    console.error('Aktivite logları yüklenemedi:', error)
+  }
 
   return (
     <Layout>
@@ -39,20 +44,28 @@ export default async function AdminActivityPage() {
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-3">
-                {logs.map((log: any) => (
-                  <div key={log.id} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{log.action}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{log.description}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                          {new Date(log.created_at).toLocaleString('tr-TR')}
-                        </p>
+                {logs && logs.length > 0 ? (
+                  logs.map((log: any) => (
+                    <div key={log.id} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">{log.action || 'Aktivite'}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            {log.entity_type || 'Bilinmeyen'} - {log.entity_id ? log.entity_id.slice(0, 8) : ''}
+                          </p>
+                          {log.user && (
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                              Kullanıcı: {log.user.name || log.user.email}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            {log.created_at ? new Date(log.created_at).toLocaleString('tr-TR') : ''}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-                {logs.length === 0 && (
+                  ))
+                ) : (
                   <p className="text-center text-gray-500 dark:text-gray-400 py-8">Henüz aktivite kaydı yok</p>
                 )}
               </div>

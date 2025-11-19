@@ -2,10 +2,11 @@ import { Layout } from '@/components/layout/Layout'
 import { getCurrentUser } from '@/modules/auth/actions'
 import { redirect } from 'next/navigation'
 import { getCustomers } from '@/modules/musteri/actions'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
+import { DataTable } from '@/components/ui/DataTable'
+import { Plus } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,60 +20,93 @@ export default async function CustomersPage() {
   const result = await getCustomers()
   const customers = result.data || []
 
+  const columns = [
+    {
+      key: 'name',
+      label: 'Ad Soyad',
+      sortable: true,
+    },
+    {
+      key: 'phone',
+      label: 'Telefon',
+      sortable: true,
+    },
+    {
+      key: 'email',
+      label: 'E-posta',
+      sortable: true,
+      render: (item: any) => item.email || '-',
+    },
+    {
+      key: 'address',
+      label: 'Adres',
+      render: (item: any) => (
+        <span className="max-w-xs truncate block" title={item.address}>
+          {item.address}
+        </span>
+      ),
+    },
+    {
+      key: 'city',
+      label: 'Şehir',
+      sortable: true,
+      render: (item: any) => item.city || '-',
+    },
+    {
+      key: 'created_at',
+      label: 'Kayıt Tarihi',
+      sortable: true,
+      render: (item: any) => formatDate(item.created_at),
+    },
+    {
+      key: 'actions',
+      label: 'İşlemler',
+      render: (item: any) => (
+        <Link href={`/modules/musteri/${item.id}`}>
+          <Button variant="outline" size="sm">
+            Detay
+          </Button>
+        </Link>
+      ),
+    },
+  ]
+
   return (
     <Layout>
-      <div className="px-4 py-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Müşteriler</h1>
-          {user.role === 'admin' && (
-            <Link href="/modules/musteri/yeni">
-              <Button>Yeni Müşteri</Button>
-            </Link>
-          )}
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Müşteriler</h1>
+            {user.role === 'admin' && (
+              <Link href="/modules/musteri/yeni">
+                <Button className="bg-red-600 hover:bg-red-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Yeni Müşteri
+                </Button>
+              </Link>
+            )}
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {customers.map((customer: any) => (
-            <Card key={customer.id}>
-              <CardHeader>
-                <CardTitle>{customer.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <p className="text-gray-600">
-                    <span className="font-medium">Telefon:</span> {customer.phone}
-                  </p>
-                  {customer.email && (
-                    <p className="text-gray-600">
-                      <span className="font-medium">E-posta:</span> {customer.email}
-                    </p>
-                  )}
-                  <p className="text-gray-600">
-                    <span className="font-medium">Adres:</span> {customer.address}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    Kayıt: {formatDate(customer.created_at)}
-                  </p>
-                </div>
-                <Link href={`/modules/musteri/${customer.id}`}>
-                  <Button variant="outline" className="w-full mt-4">
-                    Detay
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-
-          {customers.length === 0 && (
-            <Card className="col-span-full">
-              <CardContent className="pt-6 text-center text-gray-500">
-                <p>Henüz müşteri bulunmuyor</p>
-              </CardContent>
-            </Card>
-          )}
+          <DataTable
+            title="Müşteri Listesi"
+            data={customers}
+            columns={columns}
+            searchable
+            searchKeys={['name', 'phone', 'email', 'address', 'city']}
+            filterable
+            filters={[
+              {
+                key: 'city',
+                label: 'Şehir',
+                options: [
+                  ...new Set(customers.map((c: any) => c.city).filter(Boolean)),
+                ].map((city) => ({ value: city, label: city })),
+              },
+            ]}
+            emptyMessage="Henüz müşteri bulunmuyor"
+          />
         </div>
       </div>
     </Layout>
   )
 }
-

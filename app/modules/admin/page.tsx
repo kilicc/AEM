@@ -12,7 +12,13 @@ import {
   Activity, 
   FileText,
   BarChart3,
-  Key
+  Key,
+  Upload,
+  Download,
+  Move,
+  QrCode,
+  Users as UsersGroup,
+  FileText as FileTextTemplate
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -70,6 +76,41 @@ export default async function AdminSettingsPage() {
       icon: FileText,
       href: '/modules/admin/services',
       color: 'from-yellow-500 to-amber-500',
+    },
+    {
+      title: 'Excel İçe/Dışa Aktar',
+      description: 'Toplu ürün girişi ve veri aktarımı',
+      icon: Upload,
+      href: '/modules/admin/excel',
+      color: 'from-green-500 to-teal-500',
+    },
+    {
+      title: 'Depo Transferi',
+      description: 'Depo arası ürün transferi',
+      icon: Move,
+      href: '/modules/admin/transfer',
+      color: 'from-indigo-500 to-purple-500',
+    },
+    {
+      title: 'Barkod/QR Kod',
+      description: 'Barkod ve QR kod yönetimi',
+      icon: QrCode,
+      href: '/modules/admin/barcode',
+      color: 'from-pink-500 to-rose-500',
+    },
+    {
+      title: 'Müşteri Grupları',
+      description: 'Müşteri segmentasyonu ve grupları',
+      icon: UsersGroup,
+      href: '/modules/admin/customer-groups',
+      color: 'from-cyan-500 to-blue-500',
+    },
+    {
+      title: 'Fatura Şablonları',
+      description: 'Fatura tasarımları ve şablonları',
+      icon: FileTextTemplate,
+      href: '/modules/admin/invoice-templates',
+      color: 'from-amber-500 to-orange-500',
     },
   ]
 

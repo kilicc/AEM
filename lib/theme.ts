@@ -5,15 +5,23 @@ export type Theme = 'light' | 'dark' | 'system'
 export function getTheme(): Theme {
   if (typeof window === 'undefined') return 'system'
   
-  const stored = localStorage.getItem('theme') as Theme
-  return stored || 'system'
+  try {
+    const stored = localStorage.getItem('theme') as Theme
+    return stored || 'system'
+  } catch {
+    return 'system'
+  }
 }
 
 export function setTheme(theme: Theme) {
   if (typeof window === 'undefined') return
   
-  localStorage.setItem('theme', theme)
-  applyTheme(theme)
+  try {
+    localStorage.setItem('theme', theme)
+    applyTheme(theme)
+  } catch (e) {
+    console.error('Tema kaydedilemedi:', e)
+  }
 }
 
 export function applyTheme(theme: Theme) {
@@ -39,10 +47,23 @@ export function initTheme() {
   applyTheme(theme)
 
   // Sistem teması değişikliklerini dinle
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  const handleChange = (e: MediaQueryListEvent) => {
     if (getTheme() === 'system') {
       applyTheme('system')
     }
-  })
+  }
+  
+  // Modern tarayıcılar için
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', handleChange)
+  } else {
+    // Eski tarayıcılar için
+    mediaQuery.addListener(handleChange)
+  }
 }
 
+// Sayfa yüklendiğinde temayı uygula
+if (typeof window !== 'undefined') {
+  initTheme()
+}

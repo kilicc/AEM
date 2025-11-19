@@ -2,10 +2,11 @@ import { Layout } from '@/components/layout/Layout'
 import { getCurrentUser } from '@/modules/auth/actions'
 import { redirect } from 'next/navigation'
 import { getWorkOrders } from '@/modules/is-emri/actions'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDate, formatDateTime } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { DataTable } from '@/components/ui/DataTable'
+import { Plus } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,98 +20,166 @@ export default async function WorkOrdersPage() {
   const result = await getWorkOrders(user.role === 'admin' ? undefined : user.id)
   const workOrders = result.data || []
 
-  const statusColors: Record<string, string> = {
-    waiting: 'bg-yellow-100 text-yellow-800',
-    'in-progress': 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-  }
+  const statusOptions = [
+    { value: 'waiting', label: 'Beklemede' },
+    { value: 'in-progress', label: 'İşlemde' },
+    { value: 'completed', label: 'Tamamlandı' },
+    { value: 'cancelled', label: 'İptal' },
+  ]
 
-  const statusLabels: Record<string, string> = {
-    waiting: 'Beklemede',
-    'in-progress': 'İşlemde',
-    completed: 'Tamamlandı',
-    cancelled: 'İptal',
-  }
+  const priorityOptions = [
+    { value: 'low', label: 'Düşük' },
+    { value: 'normal', label: 'Normal' },
+    { value: 'high', label: 'Yüksek' },
+    { value: 'urgent', label: 'Acil' },
+  ]
+
+  const columns = [
+    {
+      key: 'id',
+      label: 'İş Emri No',
+      render: (item: any) => (
+        <Link
+          href={`/modules/is-emri/${item.id}`}
+          className="text-red-600 hover:text-red-700 font-semibold"
+        >
+          #{item.id.slice(0, 8)}
+        </Link>
+      ),
+    },
+    {
+      key: 'customers',
+      label: 'Müşteri',
+      sortable: true,
+      render: (item: any) => item.customers?.name || 'Bilinmiyor',
+    },
+    {
+      key: 'services',
+      label: 'Hizmet',
+      sortable: true,
+      render: (item: any) => item.services?.name || 'Bilinmiyor',
+    },
+    {
+      key: 'users',
+      label: 'Atanan',
+      sortable: true,
+      render: (item: any) => item.users?.name || 'Atanmamış',
+    },
+    {
+      key: 'status',
+      label: 'Durum',
+      sortable: true,
+      render: (item: any) => {
+        const statusColors: Record<string, string> = {
+          waiting: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+          'in-progress': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+          completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+          cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+        }
+        const statusLabels: Record<string, string> = {
+          waiting: 'Beklemede',
+          'in-progress': 'İşlemde',
+          completed: 'Tamamlandı',
+          cancelled: 'İptal',
+        }
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+              statusColors[item.status] || 'bg-gray-100 text-gray-800'
+            }`}
+          >
+            {statusLabels[item.status] || item.status}
+          </span>
+        )
+      },
+    },
+    {
+      key: 'priority',
+      label: 'Öncelik',
+      sortable: true,
+      render: (item: any) => {
+        if (!item.priority || item.priority === 'normal') return '-'
+        const priorityColors: Record<string, string> = {
+          low: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+          high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+          urgent: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+        }
+        const priorityLabels: Record<string, string> = {
+          low: 'Düşük',
+          high: 'Yüksek',
+          urgent: 'Acil',
+        }
+        return (
+          <span
+            className={`px-2 py-1 rounded text-xs font-semibold ${
+              priorityColors[item.priority] || ''
+            }`}
+          >
+            {priorityLabels[item.priority] || item.priority}
+          </span>
+        )
+      },
+    },
+    {
+      key: 'created_at',
+      label: 'Oluşturulma',
+      sortable: true,
+      render: (item: any) => formatDateTime(item.created_at),
+    },
+    {
+      key: 'actions',
+      label: 'İşlemler',
+      render: (item: any) => (
+        <Link href={`/modules/is-emri/${item.id}`}>
+          <Button variant="outline" size="sm">
+            Detay
+          </Button>
+        </Link>
+      ),
+    },
+  ]
 
   return (
     <Layout>
-      <div className="px-4 py-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {user.role === 'admin' ? 'İş Emirleri' : 'İş Emirlerim'}
-          </h1>
-          {user.role === 'admin' && (
-            <Link href="/modules/is-emri/yeni">
-              <Button>Yeni İş Emri</Button>
-            </Link>
-          )}
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {user.role === 'admin' ? 'İş Emirleri' : 'İş Emirlerim'}
+            </h1>
+            {user.role === 'admin' && (
+              <Link href="/modules/is-emri/yeni">
+                <Button className="bg-red-600 hover:bg-red-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Yeni İş Emri
+                </Button>
+              </Link>
+            )}
+          </div>
 
-        <div className="space-y-4">
-          {workOrders.map((order: any) => (
-            <Card key={order.id}>
-              <CardContent className="pt-6">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Link href={`/modules/is-emri/${order.id}`}>
-                            <h3 className="text-lg font-semibold text-blue-600 hover:underline">
-                              {order.customers?.name || 'Müşteri'}
-                            </h3>
-                          </Link>
-                          {order.priority && order.priority !== 'normal' && (
-                            <span
-                              className={`px-2 py-0.5 text-xs rounded ${
-                                order.priority === 'urgent'
-                                  ? 'bg-red-100 text-red-800'
-                                  : order.priority === 'high'
-                                  ? 'bg-orange-100 text-orange-800'
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}
-                            >
-                              {order.priority === 'urgent' ? 'Acil' : order.priority === 'high' ? 'Yüksek' : 'Düşük'}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-gray-600 mt-1">
-                          {order.services?.name || 'Hizmet'}
-                        </p>
-                        <div className="mt-2 text-sm text-gray-500">
-                          <p>Atanan: {order.users?.name || 'Bilinmiyor'}</p>
-                          <p>Oluşturulma: {formatDateTime(order.created_at)}</p>
-                          {order.location_address && (
-                            <p>Konum: {order.location_address}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span
-                          className={`px-3 py-1 text-sm rounded-full ${statusColors[order.status] || 'bg-gray-100 text-gray-800'}`}
-                        >
-                          {statusLabels[order.status] || order.status}
-                        </span>
-                        <Link href={`/modules/is-emri/${order.id}`}>
-                          <Button variant="outline" size="sm">
-                            Detay
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          {workOrders.length === 0 && (
-            <Card>
-              <CardContent className="pt-6 text-center text-gray-500">
-                <p>Henüz iş emri bulunmuyor</p>
-              </CardContent>
-            </Card>
-          )}
+          <DataTable
+            title="İş Emri Listesi"
+            data={workOrders}
+            columns={columns}
+            searchable
+            searchKeys={['customers.name', 'services.name', 'users.name', 'status']}
+            filterable
+            filters={[
+              {
+                key: 'status',
+                label: 'Durum',
+                options: statusOptions,
+              },
+              {
+                key: 'priority',
+                label: 'Öncelik',
+                options: priorityOptions,
+              },
+            ]}
+            emptyMessage="Henüz iş emri bulunmuyor"
+          />
         </div>
       </div>
     </Layout>
   )
 }
-

@@ -2,9 +2,10 @@ import { Layout } from '@/components/layout/Layout'
 import { getCurrentUser } from '@/modules/auth/actions'
 import { redirect } from 'next/navigation'
 import { getInvoices } from '@/modules/fatura/actions'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDate, formatCurrency } from '@/lib/utils'
+import { DataTable } from '@/components/ui/DataTable'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,68 +23,116 @@ export default async function InvoicesPage() {
   const result = await getInvoices()
   const invoices = result.data || []
 
-  const statusColors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-800',
-    sent: 'bg-blue-100 text-blue-800',
-    paid: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-  }
+  const statusOptions = [
+    { value: 'draft', label: 'Taslak' },
+    { value: 'sent', label: 'Gönderildi' },
+    { value: 'paid', label: 'Ödendi' },
+    { value: 'cancelled', label: 'İptal' },
+  ]
 
-  const statusLabels: Record<string, string> = {
-    draft: 'Taslak',
-    sent: 'Gönderildi',
-    paid: 'Ödendi',
-    cancelled: 'İptal',
-  }
+  const columns = [
+    {
+      key: 'invoice_number',
+      label: 'Fatura No',
+      sortable: true,
+      render: (item: any) => (
+        <Link
+          href={`/modules/fatura/${item.id}`}
+          className="text-red-600 hover:text-red-700 font-semibold"
+        >
+          {item.invoice_number || `#${item.id.slice(0, 8)}`}
+        </Link>
+      ),
+    },
+    {
+      key: 'customers',
+      label: 'Müşteri',
+      sortable: true,
+      render: (item: any) => item.customers?.name || 'Bilinmiyor',
+    },
+    {
+      key: 'issue_date',
+      label: 'Tarih',
+      sortable: true,
+      render: (item: any) => formatDate(item.issue_date || item.created_at),
+    },
+    {
+      key: 'total_amount',
+      label: 'Toplam',
+      sortable: true,
+      render: (item: any) => (
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {formatCurrency(item.total_amount || 0)}
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      label: 'Durum',
+      sortable: true,
+      render: (item: any) => {
+        const statusColors: Record<string, string> = {
+          draft: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+          sent: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+          paid: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+          cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+        }
+        const statusLabels: Record<string, string> = {
+          draft: 'Taslak',
+          sent: 'Gönderildi',
+          paid: 'Ödendi',
+          cancelled: 'İptal',
+        }
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+              statusColors[item.status] || 'bg-gray-100 text-gray-800'
+            }`}
+          >
+            {statusLabels[item.status] || item.status}
+          </span>
+        )
+      },
+    },
+    {
+      key: 'actions',
+      label: 'İşlemler',
+      render: (item: any) => (
+        <Link href={`/modules/fatura/${item.id}`}>
+          <Button variant="outline" size="sm">
+            Detay
+          </Button>
+        </Link>
+      ),
+    },
+  ]
 
   return (
     <Layout>
-      <div className="px-4 py-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Faturalar</h1>
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Faturalar</h1>
+          </div>
 
-        <div className="space-y-4">
-          {invoices.map((invoice: any) => (
-            <Card key={invoice.id}>
-              <CardContent className="pt-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <Link href={`/modules/fatura/${invoice.id}`}>
-                      <h3 className="text-lg font-semibold text-blue-600 hover:underline">
-                        {invoice.invoice_number}
-                      </h3>
-                    </Link>
-                    <p className="text-gray-600 mt-1">
-                      {invoice.customers?.name || 'Müşteri'}
-                    </p>
-                    <div className="mt-2 text-sm text-gray-500">
-                      <p>Tarih: {formatDate(invoice.issue_date)}</p>
-                      <p className="text-lg font-bold text-gray-900 mt-2">
-                        {formatCurrency(invoice.total_amount)}
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`px-3 py-1 text-sm rounded-full ${
-                      statusColors[invoice.status] || 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {statusLabels[invoice.status] || invoice.status}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          {invoices.length === 0 && (
-            <Card>
-              <CardContent className="pt-6 text-center text-gray-500">
-                <p>Henüz fatura bulunmuyor</p>
-              </CardContent>
-            </Card>
-          )}
+          <DataTable
+            title="Fatura Listesi"
+            data={invoices}
+            columns={columns}
+            searchable
+            searchKeys={['invoice_number', 'customers.name']}
+            filterable
+            filters={[
+              {
+                key: 'status',
+                label: 'Durum',
+                options: statusOptions,
+              },
+            ]}
+            emptyMessage="Henüz fatura bulunmuyor"
+          />
         </div>
       </div>
     </Layout>
   )
 }
-

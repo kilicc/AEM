@@ -3,10 +3,11 @@ import { getCurrentUser } from '@/modules/auth/actions'
 import { redirect, notFound } from 'next/navigation'
 import { getDepots } from '@/modules/depo/actions'
 import { getProducts } from '@/modules/depo/actions'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getUsers } from '@/modules/admin/actions'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ExcelImport } from '@/components/depo/ExcelImport'
+import { ArrowLeft } from 'lucide-react'
+import { DepotProductsManager } from './DepotProductsManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,72 +33,36 @@ export default async function DepotDetailPage({ params }: { params: { id: string
   const productsResult = await getProducts(params.id)
   const products = productsResult.data || []
 
+  const usersResult = await getUsers()
+  const users = usersResult.data || []
+
   return (
     <Layout>
-      <div className="px-4 py-6 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <Link href="/modules/depo" className="text-blue-600 hover:text-blue-800 mb-2 inline-block">
-              ← Depolara Dön
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="mb-6">
+            <Link
+              href="/modules/depo"
+              className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 mb-4 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Depolara Dön
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">{depot.name}</h1>
-            <p className="text-gray-600 mt-1">{depot.address || 'Adres belirtilmemiş'}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Ürünler</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {products.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left p-2">Ürün Adı</th>
-                          <th className="text-left p-2">Birim</th>
-                          <th className="text-left p-2">Birim Fiyat</th>
-                          <th className="text-left p-2">Miktar</th>
-                          <th className="text-left p-2">Tip</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products.map((product: any) => (
-                          <tr key={product.id} className="border-b">
-                            <td className="p-2">{product.name}</td>
-                            <td className="p-2">{product.unit}</td>
-                            <td className="p-2">{product.unit_price} TL</td>
-                            <td className="p-2">{product.quantity}</td>
-                            <td className="p-2">
-                              <span className={`px-2 py-1 rounded text-xs ${
-                                product.type === 'tool' 
-                                  ? 'bg-blue-100 text-blue-800' 
-                                  : 'bg-green-100 text-green-800'
-                              }`}>
-                                {product.type === 'tool' ? 'Araç/Gereç' : 'Malzeme'}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-8">Henüz ürün bulunmuyor</p>
-                )}
-              </CardContent>
-            </Card>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  {depot.name}
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {depot.address || 'Adres belirtilmemiş'}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <ExcelImport depotId={params.id} />
-          </div>
+          <DepotProductsManager depotId={params.id} products={products} users={users} />
         </div>
       </div>
     </Layout>
   )
 }
-

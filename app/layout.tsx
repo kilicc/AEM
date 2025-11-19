@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "AEM - Saha İş Takip ve Depo Yönetim Sistemi",
   description: "Saha iş takip ve depo/envanter yönetim sistemi",
   manifest: "/manifest.json",
-  themeColor: "#3b82f6",
+  themeColor: "#dc2626",
 };
 
 export default function RootLayout({
@@ -15,12 +15,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="tr" suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
-

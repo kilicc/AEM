@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import DashboardStatistics from './statistics'
+import StockAlertsWidget from './StockAlertsWidget'
 import { 
   Warehouse, 
   Users, 
@@ -254,9 +255,16 @@ export default async function DashboardPage() {
             )}
           </div>
 
+          {/* Stock Alerts Section */}
+          {user.role === 'admin' && (
+            <div className="mt-6">
+              <StockAlertsWidget />
+            </div>
+          )}
+
           {/* Statistics Section */}
           {user.role === 'admin' && (
-            <div className="mt-8">
+            <div className="mt-6">
               <DashboardStatistics />
             </div>
           )}
