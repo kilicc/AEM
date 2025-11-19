@@ -20,7 +20,15 @@ Bu rehber, AEM sistemini Supabase'de kurmak için gereken tüm adımları içeri
 
 ### 3. Environment Variables (.env.local)
 
+**Detaylı rehber için `ENV_SETUP.md` dosyasına bakın.**
+
 Proje kök dizininde `.env.local` dosyası oluşturun:
+
+```bash
+cp .env.example .env.local
+```
+
+Sonra `.env.local` dosyasını düzenleyin ve Supabase bilgilerinizi ekleyin:
 
 ```env
 # Supabase
@@ -44,7 +52,9 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 
 **Önemli:** 
 - `NEXT_PUBLIC_SUPABASE_URL` ve `NEXT_PUBLIC_SUPABASE_ANON_KEY` Supabase Dashboard > Settings > API'den alınır
+- **Yeni API anahtarları** kullanıyorsanız, Dashboard'dan yeni anahtarları alın
 - `DATABASE_URL` Supabase Dashboard > Settings > Database > Connection string'den alınır (şifreyi değiştirmeyi unutmayın)
+- Environment variables değişikliklerinden sonra uygulamayı **yeniden başlatın**
 
 ### 4. Prisma Type Generation
 
