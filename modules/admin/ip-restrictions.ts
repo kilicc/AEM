@@ -6,7 +6,7 @@ import { headers } from 'next/headers'
 
 // IP kısıtlaması ekle
 export async function addIPRestriction(userId: string, ipAddress: string, isAllowed: boolean, notes?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -45,7 +45,7 @@ export async function addIPRestriction(userId: string, ipAddress: string, isAllo
 
 // IP kısıtlamalarını getir
 export async function getIPRestrictions(userId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -82,7 +82,7 @@ export async function getIPRestrictions(userId?: string) {
 
 // IP kısıtlamasını kontrol et
 export async function checkIPRestriction(userId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const headersList = headers()
   const ipAddress = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown'

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // Müşteri grubu oluştur
 export async function createCustomerGroup(name: string, description?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -39,7 +39,7 @@ export async function createCustomerGroup(name: string, description?: string) {
 
 // Müşteri gruplarını getir
 export async function getCustomerGroups() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('customer_groups')
@@ -55,7 +55,7 @@ export async function getCustomerGroups() {
 
 // Müşteriyi gruba ekle
 export async function addCustomerToGroup(customerId: string, groupId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -95,7 +95,7 @@ export async function addCustomerSpecialDay(data: {
   description?: string
   reminder_days_before?: number
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -132,7 +132,7 @@ export async function addCustomerSpecialDay(data: {
 
 // Yaklaşan özel günleri getir
 export async function getUpcomingSpecialDays(daysAhead = 30) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

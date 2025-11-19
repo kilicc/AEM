@@ -10,7 +10,7 @@ export async function logActivity(
   entityId?: string,
   details?: any
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -36,7 +36,7 @@ export async function getActivityLogs(filters?: {
   action?: string
   limit?: number
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

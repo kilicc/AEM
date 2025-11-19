@@ -13,7 +13,7 @@ export async function getFilteredWorkOrders(filters: {
   date_to?: string
   search?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

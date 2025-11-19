@@ -6,7 +6,7 @@ import { authenticator } from 'otplib'
 
 // 2FA secret oluştur
 export async function generate2FASecret() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -35,7 +35,7 @@ export async function generate2FASecret() {
 
 // 2FA'yı etkinleştir
 export async function enable2FA(secret: string, token: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -77,7 +77,7 @@ export async function enable2FA(secret: string, token: string) {
 
 // 2FA token'ını doğrula
 export async function verify2FAToken(token: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -125,7 +125,7 @@ export async function verify2FAToken(token: string) {
 
 // 2FA'yı devre dışı bırak
 export async function disable2FA() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

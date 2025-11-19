@@ -12,7 +12,7 @@ export async function getInvoiceHistory(filters?: {
   archived?: boolean
   limit?: number
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -99,7 +99,7 @@ export async function getInvoiceHistory(filters?: {
 
 // Fatura arşivleme (eski faturaları arşivle)
 export async function archiveInvoices(olderThanMonths = 6) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -140,7 +140,7 @@ export async function archiveInvoices(olderThanMonths = 6) {
 
 // Fatura istatistikleri (geçmiş bazlı)
 export async function getInvoiceHistoryStatistics(period: 'day' | 'week' | 'month' | 'year' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

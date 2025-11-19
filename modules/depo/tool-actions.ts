@@ -4,7 +4,7 @@ import { createServerClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
 export async function assignTool(toolId: string, userId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -53,7 +53,7 @@ export async function assignTool(toolId: string, userId: string) {
 }
 
 export async function returnTool(assignmentId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -100,7 +100,7 @@ export async function returnTool(assignmentId: string) {
 }
 
 export async function getUserToolAssignments(userId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

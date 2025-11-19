@@ -17,7 +17,7 @@ export async function createWorkOrderTemplate(data: {
     interval: number
   }
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -50,7 +50,7 @@ export async function createWorkOrderTemplate(data: {
 
 // İş emri şablonlarını getir
 export async function getWorkOrderTemplates() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('work_order_templates')
@@ -75,7 +75,7 @@ export async function createWorkOrderFromTemplate(
     priority?: 'low' | 'normal' | 'high' | 'urgent'
   }
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

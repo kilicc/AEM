@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import type { Depot, Product, UnitType } from '@/lib/types'
 
 export async function createDepot(name: string, address?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -42,7 +42,7 @@ export async function createDepot(name: string, address?: string) {
 }
 
 export async function getDepots() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -82,7 +82,7 @@ export async function addProduct(
   quantity: number,
   type: 'product' | 'tool'
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -121,7 +121,7 @@ export async function addProduct(
 }
 
 export async function getProducts(depotId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   let query = supabase.from('products').select('*, depots(name)')
 
@@ -142,7 +142,7 @@ export async function updateProductQuantity(
   productId: string,
   quantity: number
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

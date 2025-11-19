@@ -14,7 +14,7 @@ export async function sendNotificationWithLog(
   subject?: string,
   metadata?: any
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   // Önce log oluştur (pending)
   const { data: log, error: logError } = await supabase
@@ -59,7 +59,7 @@ export async function sendNotificationWithLog(
 
 // Bildirim loglarını getir
 export async function getNotificationLogs(userId?: string, limit = 50) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -95,7 +95,7 @@ export async function getNotificationLogs(userId?: string, limit = 50) {
 
 // Bildirim şablonlarını getir
 export async function getNotificationTemplates(type?: 'whatsapp' | 'email' | 'sms') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   let query = supabase
     .from('notification_templates')
@@ -124,7 +124,7 @@ export async function createNotificationTemplate(data: {
   body: string
   variables?: any
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -157,7 +157,7 @@ export async function createNotificationTemplate(data: {
 
 // Bildirim ayarlarını getir
 export async function getNotificationSettings(userId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -216,7 +216,7 @@ export async function updateNotificationSettings(
     low_stock_alert: boolean
   }>
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

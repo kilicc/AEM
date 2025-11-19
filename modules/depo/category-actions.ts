@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // Kategori oluştur
 export async function createProductCategory(name: string, description?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -39,7 +39,7 @@ export async function createProductCategory(name: string, description?: string) 
 
 // Kategorileri getir
 export async function getProductCategories() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('product_categories')
@@ -55,7 +55,7 @@ export async function getProductCategories() {
 
 // Kategoriyi güncelle
 export async function updateProductCategory(id: string, name: string, description?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -90,7 +90,7 @@ export async function updateProductCategory(id: string, name: string, descriptio
 
 // Kategoriyi sil
 export async function deleteProductCategory(id: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

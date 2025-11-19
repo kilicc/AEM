@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // Fatura şablonu oluştur
 export async function createInvoiceTemplate(name: string, templateData: any, isDefault = false) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -47,7 +47,7 @@ export async function createInvoiceTemplate(name: string, templateData: any, isD
 
 // Fatura şablonlarını getir
 export async function getInvoiceTemplates() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('invoice_templates')
@@ -64,7 +64,7 @@ export async function getInvoiceTemplates() {
 
 // Varsayılan şablonu getir
 export async function getDefaultInvoiceTemplate() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('invoice_templates')

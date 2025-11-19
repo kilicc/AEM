@@ -13,7 +13,7 @@ export async function sendBulkNotification(data: {
   subject?: string
   template_id?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -123,7 +123,7 @@ export async function sendBulkNotification(data: {
 
 // Toplu bildirimleri getir
 export async function getBulkNotifications(limit = 50) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -169,7 +169,7 @@ export async function createScheduledNotification(notificationData: {
     end_date?: string
   }
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -196,7 +196,7 @@ export async function createScheduledNotification(notificationData: {
 
 // Zamanlanmış bildirimleri getir
 export async function getScheduledNotifications(status?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -233,7 +233,7 @@ export async function getScheduledNotifications(status?: string) {
 
 // Zamanlanmış bildirimi iptal et
 export async function cancelScheduledNotification(id: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

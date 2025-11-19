@@ -10,7 +10,7 @@ export async function addCustomerRating(data: {
   rating: number
   comment?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -40,7 +40,7 @@ export async function addCustomerRating(data: {
 
 // Müşteri puanlamalarını getir
 export async function getCustomerRatings(customerId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('customer_ratings')

@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ results: [] })
   }
 
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const searchTerm = `%${query}%`
 
   const results: any[] = []

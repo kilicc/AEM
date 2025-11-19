@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // Barkod/QR kod oluştur ve ürüne ekle
 export async function generateBarcode(productId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -44,7 +44,7 @@ export async function generateBarcode(productId: string) {
 
 // Barkod ile ürün ara
 export async function findProductByBarcode(barcode: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('products')

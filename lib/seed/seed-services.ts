@@ -13,7 +13,7 @@ export async function seedExampleServices() {
     return { error: 'Supabase yapılandırması eksik' }
   }
 
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

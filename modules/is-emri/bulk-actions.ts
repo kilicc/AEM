@@ -12,7 +12,7 @@ export async function createBulkWorkOrders(workOrders: Array<{
   notes?: string
   priority?: 'low' | 'normal' | 'high' | 'urgent'
 }>) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

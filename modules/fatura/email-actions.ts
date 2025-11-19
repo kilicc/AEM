@@ -6,7 +6,7 @@ import { sendEmail } from '@/lib/notifications/email'
 
 // Faturayı e-posta ile gönder
 export async function sendInvoiceByEmail(invoiceId: string, recipientEmail: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -81,7 +81,7 @@ AEM Sistemi
 
 // Fatura e-posta geçmişini getir
 export async function getInvoiceEmailLogs(invoiceId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('invoice_email_logs')

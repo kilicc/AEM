@@ -8,7 +8,7 @@ export async function createService(data: {
   description?: string
   form_template?: any
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -43,7 +43,7 @@ export async function createService(data: {
 }
 
 export async function getServices() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data, error } = await supabase
     .from('services')
@@ -58,7 +58,7 @@ export async function getServices() {
 }
 
 export async function getUsers() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

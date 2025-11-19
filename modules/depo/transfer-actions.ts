@@ -11,7 +11,7 @@ export async function transferProduct(data: {
   quantity: number
   notes?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -120,7 +120,7 @@ export async function transferProduct(data: {
 
 // Transfer geçmişini getir
 export async function getDepotTransfers(depotId?: string, limit = 50) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

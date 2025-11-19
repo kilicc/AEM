@@ -12,7 +12,7 @@ export async function createCustomer(data: {
   city?: string
   district?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -44,7 +44,7 @@ export async function createCustomer(data: {
 }
 
 export async function getCustomers() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data, error } = await supabase
     .from('customers')
@@ -59,7 +59,7 @@ export async function getCustomers() {
 }
 
 export async function getCustomer(customerId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data, error } = await supabase
     .from('customers')
@@ -78,7 +78,7 @@ export async function updateCustomer(
   customerId: string,
   data: Partial<Customer>
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -120,7 +120,7 @@ export async function addCustomerDevice(
     notes?: string
   }
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

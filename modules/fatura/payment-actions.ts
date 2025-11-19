@@ -12,7 +12,7 @@ export async function addInvoicePayment(data: {
   reference_number?: string
   notes?: string
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -79,7 +79,7 @@ export async function addInvoicePayment(data: {
 
 // Fatura ödemelerini getir
 export async function getInvoicePayments(invoiceId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('invoice_payments')

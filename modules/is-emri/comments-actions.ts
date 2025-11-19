@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // İş emri yorumu ekle
 export async function addWorkOrderComment(workOrderId: string, comment: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -47,7 +47,7 @@ export async function addWorkOrderComment(workOrderId: string, comment: string) 
 
 // İş emri yorumlarını getir
 export async function getWorkOrderComments(workOrderId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('work_order_comments')
@@ -67,7 +67,7 @@ export async function getWorkOrderComments(workOrderId: string) {
 
 // İş emri geçmişini getir
 export async function getWorkOrderHistory(workOrderId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('work_order_history')

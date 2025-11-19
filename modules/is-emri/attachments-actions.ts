@@ -11,7 +11,7 @@ export async function addWorkOrderAttachment(
   fileType?: string,
   fileSize?: number
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -56,7 +56,7 @@ export async function addWorkOrderAttachment(
 
 // İş emri eklerini getir
 export async function getWorkOrderAttachments(workOrderId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('work_order_attachments')
@@ -76,7 +76,7 @@ export async function getWorkOrderAttachments(workOrderId: string) {
 
 // İş emri ekini sil
 export async function deleteWorkOrderAttachment(attachmentId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

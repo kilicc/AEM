@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import type { InvoiceStatus } from '@/lib/types'
 
 export async function createInvoiceFromWorkOrder(workOrderId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -110,7 +110,7 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
 }
 
 export async function getInvoices() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -140,7 +140,7 @@ export async function getInvoices() {
 }
 
 export async function getInvoice(invoiceId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -174,7 +174,7 @@ export async function updateInvoiceStatus(
   invoiceId: string,
   status: InvoiceStatus
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

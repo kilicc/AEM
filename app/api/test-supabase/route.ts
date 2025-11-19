@@ -3,7 +3,7 @@ import { createServerClient } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Test 1: Bağlantı testi - basit bir sorgu
     const { data: testData, error: testError } = await supabase

@@ -19,14 +19,19 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    const result = await signIn(email, password)
+    try {
+      const result = await signIn(email, password)
 
-    if (result.error) {
-      setError(result.error)
+      if (result.error) {
+        setError(result.error)
+        setLoading(false)
+      } else {
+        // Başarılı giriş - dashboard'a yönlendir
+        window.location.href = '/dashboard'
+      }
+    } catch (err: any) {
+      setError(err.message || 'Giriş yapılırken bir hata oluştu')
       setLoading(false)
-    } else {
-      router.push('/dashboard')
-      router.refresh()
     }
   }
 

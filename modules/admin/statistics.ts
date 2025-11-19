@@ -5,7 +5,7 @@ import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth,
 
 // Dashboard istatistikleri
 export async function getDashboardStatistics(period: 'day' | 'week' | 'month' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -118,7 +118,7 @@ export async function getDashboardStatistics(period: 'day' | 'week' | 'month' = 
 
 // Çalışan performans raporları
 export async function getEmployeePerformanceReports(userId?: string, period: 'day' | 'week' | 'month' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -224,7 +224,7 @@ export async function getEmployeePerformanceReports(userId?: string, period: 'da
 
 // Müşteri istatistikleri
 export async function getCustomerStatistics(period: 'day' | 'week' | 'month' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -303,7 +303,7 @@ export async function getCustomerStatistics(period: 'day' | 'week' | 'month' = '
 
 // Gelir raporları
 export async function getRevenueReports(period: 'day' | 'week' | 'month' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

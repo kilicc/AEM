@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server'
 // Auth middleware - Kullanıcı yetkilendirme kontrolü
 
 export async function requireAuth(request: NextRequest) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   

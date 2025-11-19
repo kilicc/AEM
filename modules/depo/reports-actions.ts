@@ -5,7 +5,7 @@ import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth 
 
 // Depo raporları - En çok kullanılan malzemeler
 export async function getDepotReports(depotId?: string, period: 'day' | 'week' | 'month' = 'month') {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -139,7 +139,7 @@ export async function getDepotReports(depotId?: string, period: 'day' | 'week' |
 
 // Depo stok raporu
 export async function getDepotStockReport(depotId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

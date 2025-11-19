@@ -6,7 +6,7 @@ import { createInvoiceFromWorkOrder } from './actions'
 
 // Toplu fatura oluştur
 export async function createBulkInvoices(workOrderIds: string[]) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

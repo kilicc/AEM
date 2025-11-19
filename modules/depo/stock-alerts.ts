@@ -6,7 +6,7 @@ import { sendNotificationWithLog } from '@/modules/notifications/actions'
 
 // Stok uyarısı oluştur
 export async function createStockAlert(productId: string, thresholdQuantity: number) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -42,7 +42,7 @@ export async function createStockAlert(productId: string, thresholdQuantity: num
 
 // Stok uyarılarını kontrol et ve bildirim gönder
 export async function checkStockAlerts() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   // Aktif uyarıları getir
   const { data: alerts } = await supabase
@@ -111,7 +111,7 @@ export async function checkStockAlerts() {
 
 // Stok uyarılarını getir
 export async function getStockAlerts() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

@@ -12,7 +12,7 @@ export async function createWorkOrder(data: {
   notes?: string
   priority?: 'low' | 'normal' | 'high' | 'urgent'
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -122,7 +122,7 @@ export async function createWorkOrder(data: {
 }
 
 export async function getWorkOrders(userId?: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -157,7 +157,7 @@ export async function getWorkOrders(userId?: string) {
 }
 
 export async function getWorkOrder(workOrderId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -201,7 +201,7 @@ export async function updateWorkOrderStatus(
   status: WorkOrderStatus,
   location?: { lat: number; lng: number; address?: string }
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -335,7 +335,7 @@ export async function addWorkOrderMaterial(
   quantity: number,
   unitPrice: number
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -401,7 +401,7 @@ export async function uploadWorkOrderPhoto(
   photoUrl: string,
   photoType: 'before' | 'after'
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -452,7 +452,7 @@ export async function addWorkOrderSignature(
   signerType: 'employee' | 'customer',
   signatureData: string
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {

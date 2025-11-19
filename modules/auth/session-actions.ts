@@ -6,7 +6,7 @@ import { headers } from 'next/headers'
 
 // Aktif oturumları getir
 export async function getActiveSessions() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -29,7 +29,7 @@ export async function getActiveSessions() {
 
 // Oturumu sonlandır
 export async function terminateSession(sessionId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
@@ -53,7 +53,7 @@ export async function terminateSession(sessionId: string) {
 
 // Tüm oturumları sonlandır (mevcut hariç)
 export async function terminateAllOtherSessions() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
