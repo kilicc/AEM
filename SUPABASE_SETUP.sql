@@ -573,7 +573,31 @@ ALTER TABLE public.user_2fa ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.whatsapp_approved_templates ENABLE ROW LEVEL SECURITY;
 
 -- ============================================
--- 7. RLS POLICIES - ANA TABLOLAR
+-- 7. FUNCTIONS (ÖNCE FONKSİYONLAR OLUŞTURULMALI)
+-- ============================================
+
+-- Helper function to check if user is admin (bypasses RLS to avoid infinite recursion)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.users
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Updated_at trigger function
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- ============================================
+-- 8. RLS POLICIES - ANA TABLOLAR
 -- ============================================
 -- ÖNCE: Tüm mevcut policy'leri sil (eğer varsa)
 -- Bu sayede dosya tekrar çalıştırılabilir (idempotent)
@@ -653,7 +677,7 @@ CREATE POLICY "Admins can manage invoices" ON public.invoices
   FOR ALL USING (public.is_admin());
 
 -- ============================================
--- 8. RLS POLICIES - EXTENSION TABLOLAR
+-- 9. RLS POLICIES - EXTENSION TABLOLAR
 -- ============================================
 
 -- Notification Logs
@@ -705,7 +729,7 @@ CREATE POLICY "Admins can view activity logs" ON public.activity_logs
   FOR SELECT USING (public.is_admin());
 
 -- ============================================
--- 9. RLS POLICIES - EXTENSION 2 TABLOLAR
+-- 10. RLS POLICIES - EXTENSION 2 TABLOLAR
 -- ============================================
 
 -- Depot Transfers
@@ -774,30 +798,6 @@ CREATE POLICY "Users can manage own 2FA" ON public.user_2fa
 DROP POLICY IF EXISTS "Admins can manage WhatsApp templates" ON public.whatsapp_approved_templates;
 CREATE POLICY "Admins can manage WhatsApp templates" ON public.whatsapp_approved_templates
   FOR ALL USING (public.is_admin());
-
--- ============================================
--- 10. FUNCTIONS
--- ============================================
-
--- Helper function to check if user is admin (bypasses RLS to avoid infinite recursion)
-CREATE OR REPLACE FUNCTION public.is_admin()
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM public.users
-    WHERE id = auth.uid() AND role = 'admin'
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Updated_at trigger function
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ language 'plpgsql';
 
 -- ============================================
 -- 11. TRIGGERS
