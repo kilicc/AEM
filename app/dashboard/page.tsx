@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
+import DashboardStatistics from './statistics'
 
 export const dynamic = 'force-dynamic'
 
@@ -188,6 +189,12 @@ export default async function DashboardPage() {
             </Card>
           )}
         </div>
+
+        {user.role === 'admin' && (
+          <div className="mt-8">
+            <DashboardStatistics />
+          </div>
+        )}
       </div>
     </Layout>
   )

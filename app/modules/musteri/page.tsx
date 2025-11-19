@@ -54,8 +54,8 @@ export default async function CustomersPage() {
                     Kayıt: {formatDate(customer.created_at)}
                   </p>
                 </div>
-                <Link href={`/modules/musteri/${customer.id}`} className="mt-4 block">
-                  <Button variant="outline" className="w-full">
+                <Link href={`/modules/musteri/${customer.id}`}>
+                  <Button variant="outline" className="w-full mt-4">
                     Detay
                   </Button>
                 </Link>

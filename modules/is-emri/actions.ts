@@ -3,14 +3,14 @@
 import { createServerClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import type { WorkOrderStatus } from '@/lib/types'
-import { sendWorkOrderNotification } from '@/lib/notifications/whatsapp'
-import { sendWorkOrderEmailNotification } from '@/lib/notifications/email'
+// Bildirimler artık sendNotificationWithLog ile yapılıyor
 
 export async function createWorkOrder(data: {
   customer_id: string
   service_id: string
   assigned_user_id: string
   notes?: string
+  priority?: 'low' | 'normal' | 'high' | 'urgent'
 }) {
   const supabase = createServerClient()
   
@@ -34,6 +34,7 @@ export async function createWorkOrder(data: {
     .insert({
       ...data,
       status: 'waiting',
+      priority: data.priority || 'normal',
     })
     .select()
     .single()
@@ -225,6 +226,8 @@ export async function updateWorkOrderStatus(
   // Durum değiştiğinde admin'e bildirim gönder
   if (status === 'in-progress' || status === 'completed') {
     try {
+      const { sendNotificationWithLog } = await import('@/modules/notifications/actions')
+      
       const { data: admins } = await supabase
         .from('users')
         .select('id, phone, email, name')
@@ -236,27 +239,50 @@ export async function updateWorkOrderStatus(
         .eq('id', workOrder.assigned_user_id)
         .single()
 
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('name')
+        .eq('id', workOrder.customer_id)
+        .single()
+
       const statusText = status === 'in-progress' ? 'İşlemde' : 'Tamamlandı'
-      const message = `İş emri durumu değişti!\n\nİş Emri ID: ${workOrderId}\nÇalışan: ${assignedUser?.name || 'Bilinmiyor'}\nYeni Durum: ${statusText}`
+      const message = `İş emri durumu değişti!\n\nİş Emri ID: ${workOrderId}\nMüşteri: ${customer?.name || 'Bilinmiyor'}\nÇalışan: ${assignedUser?.name || 'Bilinmiyor'}\nYeni Durum: ${statusText}${location?.address ? `\nKonum: ${location.address}` : ''}`
 
       if (admins) {
         for (const admin of admins) {
-          if (admin.phone) {
-            await sendWorkOrderNotification(
-              workOrderId,
-              admin.id,
-              admin.phone,
-              message
-            )
+          const { data: adminSettings } = await supabase
+            .from('notification_settings')
+            .select('*')
+            .eq('user_id', admin.id)
+            .single()
+
+          const settings = adminSettings || {
+            whatsapp_enabled: true,
+            email_enabled: true,
+            work_order_status_changed: true,
           }
-          if (admin.email) {
-            await sendWorkOrderEmailNotification(
-              workOrderId,
-              admin.id,
-              admin.email,
-              `İş Emri Durumu: ${statusText}`,
-              message
-            )
+
+          if (settings.work_order_status_changed) {
+            if (admin.phone && settings.whatsapp_enabled) {
+              await sendNotificationWithLog(
+                admin.id,
+                'whatsapp',
+                admin.phone,
+                message,
+                undefined,
+                { work_order_id: workOrderId, type: 'work_order_status_changed', status }
+              )
+            }
+            if (admin.email && settings.email_enabled) {
+              await sendNotificationWithLog(
+                admin.id,
+                'email',
+                admin.email,
+                message,
+                `İş Emri Durumu: ${statusText}`,
+                { work_order_id: workOrderId, type: 'work_order_status_changed', status }
+              )
+            }
           }
         }
       }

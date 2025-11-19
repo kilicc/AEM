@@ -51,37 +51,52 @@ export default async function WorkOrdersPage() {
           {workOrders.map((order: any) => (
             <Card key={order.id}>
               <CardContent className="pt-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <Link href={`/modules/is-emri/${order.id}`}>
-                      <h3 className="text-lg font-semibold text-blue-600 hover:underline">
-                        {order.customers?.name || 'Müşteri'}
-                      </h3>
-                    </Link>
-                    <p className="text-gray-600 mt-1">
-                      {order.services?.name || 'Hizmet'}
-                    </p>
-                    <div className="mt-2 text-sm text-gray-500">
-                      <p>Atanan: {order.users?.name || 'Bilinmiyor'}</p>
-                      <p>Oluşturulma: {formatDateTime(order.created_at)}</p>
-                      {order.location_address && (
-                        <p>Konum: {order.location_address}</p>
-                      )}
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Link href={`/modules/is-emri/${order.id}`}>
+                            <h3 className="text-lg font-semibold text-blue-600 hover:underline">
+                              {order.customers?.name || 'Müşteri'}
+                            </h3>
+                          </Link>
+                          {order.priority && order.priority !== 'normal' && (
+                            <span
+                              className={`px-2 py-0.5 text-xs rounded ${
+                                order.priority === 'urgent'
+                                  ? 'bg-red-100 text-red-800'
+                                  : order.priority === 'high'
+                                  ? 'bg-orange-100 text-orange-800'
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}
+                            >
+                              {order.priority === 'urgent' ? 'Acil' : order.priority === 'high' ? 'Yüksek' : 'Düşük'}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-600 mt-1">
+                          {order.services?.name || 'Hizmet'}
+                        </p>
+                        <div className="mt-2 text-sm text-gray-500">
+                          <p>Atanan: {order.users?.name || 'Bilinmiyor'}</p>
+                          <p>Oluşturulma: {formatDateTime(order.created_at)}</p>
+                          {order.location_address && (
+                            <p>Konum: {order.location_address}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span
+                          className={`px-3 py-1 text-sm rounded-full ${statusColors[order.status] || 'bg-gray-100 text-gray-800'}`}
+                        >
+                          {statusLabels[order.status] || order.status}
+                        </span>
+                        <Link href={`/modules/is-emri/${order.id}`}>
+                          <Button variant="outline" size="sm">
+                            Detay
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <span
-                      className={`px-3 py-1 text-sm rounded-full ${statusColors[order.status] || 'bg-gray-100 text-gray-800'}`}
-                    >
-                      {statusLabels[order.status] || order.status}
-                    </span>
-                    <Link href={`/modules/is-emri/${order.id}`}>
-                      <Button variant="outline" size="sm">
-                        Detay
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           ))}

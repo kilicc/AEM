@@ -170,6 +170,10 @@ export async function updateProductQuantity(
     return { error: error.message }
   }
 
+  // Stok uyarılarını kontrol et
+  const { checkStockAlerts } = await import('./stock-alerts')
+  await checkStockAlerts()
+
   revalidatePath('/modules/depo')
   return { data }
 }

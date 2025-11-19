@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { signOut } from '@/modules/auth/actions'
+import { GlobalSearch } from '@/components/search/GlobalSearch'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { LanguageToggle } from '@/components/i18n/LanguageToggle'
 
 interface NavbarProps {
   userRole?: 'admin' | 'user'
@@ -60,7 +63,12 @@ export function Navbar({ userRole, userName }: NavbarProps) {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-700">{userName}</span>
+            <div className="hidden md:block w-64">
+              <GlobalSearch />
+            </div>
+            <ThemeToggle />
+            <LanguageToggle />
+            <span className="text-sm text-gray-700 dark:text-gray-300">{userName}</span>
             <form action={signOut}>
               <Button type="submit" variant="outline" size="sm">
                 Çıkış

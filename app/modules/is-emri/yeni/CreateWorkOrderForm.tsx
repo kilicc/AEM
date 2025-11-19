@@ -22,6 +22,7 @@ export default function CreateWorkOrderForm({
   const [customerId, setCustomerId] = useState('')
   const [serviceId, setServiceId] = useState('')
   const [assignedUserId, setAssignedUserId] = useState('')
+  const [priority, setPriority] = useState<'low' | 'normal' | 'high' | 'urgent'>('normal')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -41,6 +42,7 @@ export default function CreateWorkOrderForm({
       customer_id: customerId,
       service_id: serviceId,
       assigned_user_id: assignedUserId,
+      priority,
       notes: notes || undefined,
     })
 
@@ -73,6 +75,7 @@ export default function CreateWorkOrderForm({
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
               required
+              title="Müşteri"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Müşteri Seçin</option>
@@ -92,6 +95,7 @@ export default function CreateWorkOrderForm({
               value={serviceId}
               onChange={(e) => setServiceId(e.target.value)}
               required
+              title="Hizmet"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Hizmet Seçin</option>
@@ -111,6 +115,7 @@ export default function CreateWorkOrderForm({
               value={assignedUserId}
               onChange={(e) => setAssignedUserId(e.target.value)}
               required
+              title="Atanan Çalışan"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Çalışan Seçin</option>
@@ -121,6 +126,23 @@ export default function CreateWorkOrderForm({
                     {user.name} - {user.email}
                   </option>
                 ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Öncelik
+            </label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as any)}
+              title="Öncelik"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="low">Düşük</option>
+              <option value="normal">Normal</option>
+              <option value="high">Yüksek</option>
+              <option value="urgent">Acil</option>
             </select>
           </div>
 
