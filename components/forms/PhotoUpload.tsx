@@ -42,12 +42,17 @@ export function PhotoUpload({ onUpload, photos = [], readOnly = false }: PhotoUp
           <h3 className="text-lg font-semibold mb-4">Öncesi Fotoğraflar</h3>
           {!readOnly && (
             <div className="mb-4">
+              <label htmlFor="before-photo-upload" className="sr-only">
+                Öncesi fotoğraf yükle
+              </label>
               <input
+                id="before-photo-upload"
                 ref={beforeInputRef}
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileSelect(e, 'before')}
                 className="hidden"
+                aria-label="Öncesi fotoğraf yükle"
               />
               <Button
                 type="button"
@@ -78,12 +83,17 @@ export function PhotoUpload({ onUpload, photos = [], readOnly = false }: PhotoUp
           <h3 className="text-lg font-semibold mb-4">Sonrası Fotoğraflar</h3>
           {!readOnly && (
             <div className="mb-4">
+              <label htmlFor="after-photo-upload" className="sr-only">
+                Sonrası fotoğraf yükle
+              </label>
               <input
+                id="after-photo-upload"
                 ref={afterInputRef}
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileSelect(e, 'after')}
                 className="hidden"
+                aria-label="Sonrası fotoğraf yükle"
               />
               <Button
                 type="button"
