@@ -1,0 +1,10 @@
+// This file is for Prisma db pull only - Supabase is the source of truth
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+

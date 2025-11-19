@@ -1,0 +1,74 @@
+version: 1
+rules:
+  - name: Project Technology
+    description: All code must be written ONLY in Next.js (latest stable 14+ or 16), TypeScript, TailwindCSS, Supabase, Prisma (only for DB schema sync).
+    match: "**/*"
+    expect:
+      - "Use Next.js App Router and Server Actions."
+      - "Use Supabase JS client for all database operations."
+      - "Use Prisma only for db pull + type generation (never as main ORM at runtime)."
+      - "All backend logic lives in Next.js server routes or server actions."
+
+  - name: Build And Push Policy
+    description: After every major change, ALWAYS run build. If build succeeds, push to Github repository: https://github.com/kilicc/AEM.git
+    match: "**/*"
+    expect:
+      - "Never skip the build step."
+      - "If build succeeds, automatically push to https://github.com/kilicc/AEM.git"
+      - "If build fails, STOP and fix the root issue before continuing."
+      - "If the same error repeats, find a different technical approach BUT keep the rules unchanged."
+
+  - name: Database Sync Rule
+    description: Supabase is the single source of truth for the database schema.
+    match: "**/*"
+    expect:
+      - "Before creating or modifying DB types, run: prisma db pull"
+      - "Generate types after pull: prisma generate"
+      - "Base all TypeScript types directly on the Supabase schema."
+
+  - name: Architecture Rules
+    description: Project structure must follow clean architecture.
+    match: "**/*"
+    expect:
+      - "Use /app structure in Next.js"
+      - "Create modules: /modules/admin, /modules/depo, /modules/is-emri, /modules/musteri, /modules/fatura, /modules/auth"
+      - "Use server actions for mutations."
+      - "Use React Query or built-in Next.js fetching patterns for data."
+      - "Use Supabase Row Level Security safely."
+
+  - name: Inventory & Work Order Logic
+    description: Functional rules for the system.
+    match: "**/*"
+    expect:
+      - "There must be 2 user types: Admin and User."
+      - "Admin can create multiple depots, add items, tools, assign tools to users."
+      - "Assigned tools remain 'zimmetli' until the user returns them."
+      - "Users receive assigned job orders, change status, upload photos, add used materials, sign digitally."
+      - "Location must be captured when a user marks a job as 'in-progress'."
+      - "All jobs must automatically generate invoice drafts."
+
+  - name: Messaging & Notification Rules
+    description: WhatsApp and email notifications for all state changes.
+    match: "**/*"
+    expect:
+      - "When a new work order is created, notify the assigned user via WhatsApp API and email."
+      - "When work order status changes (waiting, in-progress, completed), notify admin."
+      - "System must allow future integration with e-signature."
+
+  - name: UI/UX Rules
+    description: Interface expectations.
+    match: "**/*"
+    expect:
+      - "Use TailwindCSS."
+      - "Use shadcn/ui for form components."
+      - "Use responsive and mobile-first design."
+      - "Create a clean admin dashboard and worker dashboard."
+
+  - name: No Compromise Policy
+    description: These rules can NEVER be modified or ignored.
+    match: "**/*"
+    expect:
+      - "If the solution becomes complex, find alternate methods."
+      - "Never violate architecture or technology decisions."
+      - "Never change any specified rule."
+      - "System must ALWAYS use Next.js + Supabase."
