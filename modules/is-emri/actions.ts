@@ -45,6 +45,24 @@ export async function createWorkOrder(data: {
 
   // Atanan kullanıcıya WhatsApp ve e-posta bildirimleri gönder
   try {
+    // Bildirim ayarlarını kontrol et
+    const { data: notificationSettings } = await supabase
+      .from('notification_settings')
+      .select('*')
+      .eq('user_id', data.assigned_user_id)
+      .single()
+
+    const settings = notificationSettings || {
+      whatsapp_enabled: true,
+      email_enabled: true,
+      work_order_created: true,
+    }
+
+    if (!settings.work_order_created) {
+      // Kullanıcı bildirimleri kapalı
+      return { data: workOrder }
+    }
+
     const { data: assignedUser } = await supabase
       .from('users')
       .select('phone, email, name')
@@ -57,25 +75,40 @@ export async function createWorkOrder(data: {
       .eq('id', data.customer_id)
       .single()
 
+    const { data: service } = await supabase
+      .from('services')
+      .select('name')
+      .eq('id', data.service_id)
+      .single()
+
     if (assignedUser) {
-      const message = `Yeni iş emri oluşturuldu!\n\nMüşteri: ${customer?.name || 'Bilinmiyor'}\nAdres: ${customer?.address || 'Bilinmiyor'}\n\nDetaylar için sisteme giriş yapın.`
+      const priorityText = data.priority === 'urgent' ? '🚨 ACİL' : 
+                          data.priority === 'high' ? '⚠️ Yüksek' :
+                          data.priority === 'low' ? '📌 Düşük' : '📋 Normal'
       
-      if (assignedUser.phone) {
-        await sendWorkOrderNotification(
-          workOrder.id,
+      const message = `Yeni iş emri oluşturuldu!\n\n${priorityText}\nMüşteri: ${customer?.name || 'Bilinmiyor'}\nHizmet: ${service?.name || 'Bilinmiyor'}\nAdres: ${customer?.address || 'Bilinmiyor'}\n\nDetaylar için sisteme giriş yapın.`
+      
+      if (assignedUser.phone && settings.whatsapp_enabled) {
+        const { sendNotificationWithLog } = await import('@/modules/notifications/actions')
+        await sendNotificationWithLog(
           data.assigned_user_id,
+          'whatsapp',
           assignedUser.phone,
-          message
+          message,
+          undefined,
+          { work_order_id: workOrder.id, type: 'work_order_created' }
         )
       }
 
-      if (assignedUser.email) {
-        await sendWorkOrderEmailNotification(
-          workOrder.id,
+      if (assignedUser.email && settings.email_enabled) {
+        const { sendNotificationWithLog } = await import('@/modules/notifications/actions')
+        await sendNotificationWithLog(
           data.assigned_user_id,
+          'email',
           assignedUser.email,
+          message,
           'Yeni İş Emri Oluşturuldu',
-          message
+          { work_order_id: workOrder.id, type: 'work_order_created' }
         )
       }
     }
