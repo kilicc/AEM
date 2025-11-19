@@ -1,15 +1,14 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          AEM - Saha İş Takip ve Depo Yönetim Sistemi
-        </h1>
-        <p className="text-center text-gray-600">
-          Sistem kurulumu tamamlandı. Modüller oluşturuluyor...
-        </p>
-      </div>
-    </main>
-  );
-}
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/modules/auth/actions'
 
+export const dynamic = 'force-dynamic'
+
+export default async function Home() {
+  const user = await getCurrentUser()
+
+  if (user) {
+    redirect('/dashboard')
+  } else {
+    redirect('/auth/login')
+  }
+}
