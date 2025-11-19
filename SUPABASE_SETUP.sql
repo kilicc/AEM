@@ -802,6 +802,22 @@ CREATE POLICY "Admins can manage WhatsApp templates" ON public.whatsapp_approved
 -- ============================================
 -- 11. TRIGGERS
 -- ============================================
+-- ÖNCE: Tüm mevcut trigger'ları sil (eğer varsa)
+
+DO $$ 
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (
+        SELECT trigger_name, event_object_table, event_object_schema
+        FROM information_schema.triggers
+        WHERE event_object_schema = 'public'
+    ) 
+    LOOP
+        EXECUTE format('DROP TRIGGER IF EXISTS %I ON %I.%I', 
+                       r.trigger_name, r.event_object_schema, r.event_object_table);
+    END LOOP;
+END $$;
 
 -- Ana tablolar için triggers
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users
