@@ -1,4 +1,4 @@
-// Geolocation utilities
+// Konum yardımcı fonksiyonları
 
 export interface Location {
   lat: number
@@ -18,10 +18,10 @@ export async function getCurrentLocation(): Promise<Location | null> {
         const lat = position.coords.latitude
         const lng = position.coords.longitude
 
-        // Try to get address from reverse geocoding
+        // Ters coğrafi kodlama ile adres almayı dene
         let address: string | undefined
         try {
-          // Using a free reverse geocoding service (you can replace with your preferred service)
+          // Ücretsiz ters coğrafi kodlama servisi kullanılıyor (istediğiniz servisle değiştirebilirsiniz)
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
             {
@@ -33,13 +33,13 @@ export async function getCurrentLocation(): Promise<Location | null> {
           const data = await response.json()
           address = data.display_name
         } catch (error) {
-          console.warn('Reverse geocoding failed:', error)
+          console.warn('Ters coğrafi kodlama başarısız:', error)
         }
 
         resolve({ lat, lng, address })
       },
       (error) => {
-        console.error('Geolocation error:', error)
+        console.error('Konum hatası:', error)
         resolve(null)
       },
       {

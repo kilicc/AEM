@@ -16,7 +16,7 @@ export async function createCustomer(data: {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -26,7 +26,7 @@ export async function createCustomer(data: {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: customer, error } = await supabase
@@ -82,7 +82,7 @@ export async function updateCustomer(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -92,7 +92,7 @@ export async function updateCustomer(
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: customer, error } = await supabase
@@ -124,7 +124,7 @@ export async function addCustomerDevice(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase

@@ -7,14 +7,14 @@ Next.js, TypeScript, TailwindCSS, Supabase ve Prisma kullanılarak geliştirilmi
 - **Next.js 14+** (App Router)
 - **TypeScript**
 - **TailwindCSS**
-- **Supabase** (Database ve Auth)
-- **Prisma** (Sadece db pull ve type generation için)
+- **Supabase** (Veritabanı ve Kimlik Doğrulama)
+- **Prisma** (Sadece veritabanı şeması çekme ve tip oluşturma için)
 
 ## Özellikler
 
 ### Kullanıcı Tipleri
 - **Admin**: Tüm sistem yönetimi
-- **User (Çalışan)**: İş emirlerini görüntüleme ve güncelleme
+- **Kullanıcı (Çalışan)**: İş emirlerini görüntüleme ve güncelleme
 
 ### Modüller
 
@@ -46,7 +46,7 @@ Next.js, TypeScript, TailwindCSS, Supabase ve Prisma kullanılarak geliştirilmi
 
 #### 5. Bildirim Sistemi
 - WhatsApp bildirimleri (yeni iş emri, durum değişiklikleri)
-- Email bildirimleri
+- E-posta bildirimleri
 - Admin'e durum değişiklik bildirimleri
 
 ## Kurulum
@@ -56,36 +56,36 @@ Next.js, TypeScript, TailwindCSS, Supabase ve Prisma kullanılarak geliştirilmi
 npm install
 ```
 
-### 2. Environment Variables
+### 2. Ortam Değişkenleri
 `.env.local` dosyası oluşturun:
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-DATABASE_URL=your_supabase_database_url
+NEXT_PUBLIC_SUPABASE_URL=supabase_proje_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=supabase_anon_key
+DATABASE_URL=supabase_veritabani_url
 
-# WhatsApp API (opsiyonel)
+# WhatsApp API (isteğe bağlı)
 WHATSAPP_API_URL=
 WHATSAPP_API_KEY=
 
-# Email (opsiyonel)
+# E-posta (isteğe bağlı)
 SMTP_HOST=
 SMTP_PORT=
 SMTP_USER=
 SMTP_PASSWORD=
 ```
 
-### 3. Supabase Database Setup
+### 3. Supabase Veritabanı Kurulumu
 1. Supabase projenizde SQL Editor'ü açın
 2. `lib/db/schema.sql` dosyasındaki SQL'i çalıştırın
-3. Row Level Security (RLS) politikaları otomatik oluşturulacak
+3. Satır Seviyesi Güvenlik (RLS) politikaları otomatik oluşturulacak
 
-### 4. Prisma Type Generation
+### 4. Prisma Tip Oluşturma
 ```bash
 npx prisma db pull
 npx prisma generate
 ```
 
-### 5. Development Server
+### 5. Geliştirme Sunucusu
 ```bash
 npm run dev
 ```
@@ -93,50 +93,49 @@ npm run dev
 ## Proje Yapısı
 
 ```
-/app                 # Next.js App Router pages
-/modules             # Feature modules
+/app                 # Next.js App Router sayfaları
+/modules             # Özellik modülleri
   /admin            # Admin modülü
-  /auth             # Authentication
+  /auth             # Kimlik doğrulama
   /depo             # Depo/Envanter
   /fatura           # Fatura
   /is-emri          # İş Emri
-  /musteri           # Müşteri
-/components         # React components
-/lib                # Utilities
-  /db              # Database schema
-  /location        # Geolocation utilities
-  /notifications   # WhatsApp/Email
-  /types           # TypeScript types
-  /utils           # Helper functions
+  /musteri          # Müşteri
+/components         # React bileşenleri
+/lib                # Yardımcı fonksiyonlar
+  /db              # Veritabanı şeması
+  /location        # Konum yardımcı fonksiyonları
+  /notifications   # WhatsApp/E-posta
+  /types           # TypeScript tipleri
+  /utils           # Yardımcı fonksiyonlar
 ```
 
-## Database Schema
+## Veritabanı Şeması
 
-Supabase, database'in tek kaynağıdır. Schema değişiklikleri için:
+Supabase, veritabanının tek kaynağıdır. Şema değişiklikleri için:
 1. Supabase'de değişiklikleri yapın
 2. `npx prisma db pull` çalıştırın
 3. `npx prisma generate` çalıştırın
 
-## Build ve Deploy
+## Derleme ve Yayınlama
 
 ```bash
 npm run build
 ```
 
-Build başarılı olduktan sonra otomatik olarak GitHub'a push edilir:
+Derleme başarılı olduktan sonra otomatik olarak GitHub'a gönderilir:
 ```bash
 git push origin main
 ```
 
 ## Notlar
 
-- Tüm backend logic Next.js Server Actions içinde
-- Supabase JS client runtime'da kullanılır
-- Prisma sadece type generation için kullanılır
-- Row Level Security (RLS) aktif
-- Responsive ve mobile-first tasarım
+- Tüm backend mantığı Next.js Server Actions içinde
+- Supabase JS client çalışma zamanında kullanılır
+- Prisma sadece tip oluşturma için kullanılır
+- Satır Seviyesi Güvenlik (RLS) aktif
+- Duyarlı ve mobil-öncelikli tasarım
 
 ## Lisans
 
-Proprietary
-
+Özel

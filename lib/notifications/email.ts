@@ -1,5 +1,5 @@
-// Email notification service
-// This will integrate with SMTP/Email service in the future
+// E-posta bildirim servisi
+// Gelecekte SMTP/E-posta servisi ile entegre edilecek
 
 export async function sendEmail(
   to: string,
@@ -15,21 +15,21 @@ export async function sendEmail(
   const smtpPassword = process.env.SMTP_PASSWORD
 
   if (!smtpHost || !smtpPort || !smtpUser || !smtpPassword) {
-    console.warn('Email service not configured')
-    return { success: false, error: 'Email service not configured' }
+    console.warn('E-posta servisi yapılandırılmamış')
+    return { success: false, error: 'E-posta servisi yapılandırılmamış' }
   }
 
   try {
-    // TODO: Use nodemailer or similar library
-    // For now, just log
-    console.log('Email would be sent:', { to, subject, body })
+    // TODO: nodemailer veya benzeri kütüphane kullan
+    // Şimdilik sadece logla
+    console.log('E-posta gönderilecek:', { to, subject, body })
     
     return { success: true }
   } catch (error) {
-    console.error('Email notification error:', error)
+    console.error('E-posta bildirim hatası:', error)
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+      error: error instanceof Error ? error.message : 'Bilinmeyen hata' 
     }
   }
 }

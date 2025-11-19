@@ -12,7 +12,7 @@ export async function signIn(email: string, password: string) {
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: error.message || 'Giriş yapılırken bir hata oluştu' }
   }
 
   return { data }

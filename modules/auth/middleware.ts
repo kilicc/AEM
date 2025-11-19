@@ -2,6 +2,8 @@ import { createServerClient } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Auth middleware - Kullanıcı yetkilendirme kontrolü
+
 export async function requireAuth(request: NextRequest) {
   const supabase = createServerClient()
   
@@ -11,7 +13,7 @@ export async function requireAuth(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
-  // Get user role
+  // Kullanıcı rolünü al
   const { data: profile } = await supabase
     .from('users')
     .select('role')
@@ -29,7 +31,7 @@ export async function requireAdmin(request: NextRequest) {
   }
 
   if (auth.role !== 'admin') {
-    return NextResponse.redirect(new URL('/unauthorized', request.url))
+    return NextResponse.redirect(new URL('/yetkisiz', request.url))
   }
 
   return auth

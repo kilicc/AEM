@@ -9,7 +9,7 @@ export async function createDepot(name: string, address?: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   // Check if user is admin
@@ -20,7 +20,7 @@ export async function createDepot(name: string, address?: string) {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -46,7 +46,7 @@ export async function getDepots() {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -58,10 +58,10 @@ export async function getDepots() {
   let query = supabase.from('depots').select('*')
 
   if (profile?.role !== 'admin') {
-    // Users can see all depots (read-only)
+    // Kullanıcılar tüm depoları görebilir (sadece okuma)
     query = query
   } else {
-    // Admins see their own depots
+    // Adminler kendi depolarını görür
     query = query.eq('admin_id', user.id)
   }
 
@@ -86,7 +86,7 @@ export async function addProduct(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -96,7 +96,7 @@ export async function addProduct(
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -146,7 +146,7 @@ export async function updateProductQuantity(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -156,7 +156,7 @@ export async function updateProductQuantity(
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase

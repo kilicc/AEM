@@ -16,7 +16,7 @@ export async function createWorkOrder(data: {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -26,7 +26,7 @@ export async function createWorkOrder(data: {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: workOrder, error } = await supabase
@@ -42,7 +42,7 @@ export async function createWorkOrder(data: {
     return { error: error.message }
   }
 
-  // Send WhatsApp and email notifications to assigned user
+  // Atanan kullanıcıya WhatsApp ve e-posta bildirimleri gönder
   try {
     const { data: assignedUser } = await supabase
       .from('users')
@@ -79,8 +79,8 @@ export async function createWorkOrder(data: {
       }
     }
   } catch (notificationError) {
-    console.error('Notification error:', notificationError)
-    // Don't fail the work order creation if notification fails
+    console.error('Bildirim hatası:', notificationError)
+    // Bildirim başarısız olsa bile iş emri oluşturmayı başarısız yapma
   }
 
   revalidatePath('/modules/is-emri')
@@ -92,7 +92,7 @@ export async function getWorkOrders(userId?: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -106,10 +106,10 @@ export async function getWorkOrders(userId?: string) {
     .select('*, customers(*), services(*), users!work_orders_assigned_user_id_fkey(name, email)')
 
   if (profile?.role !== 'admin') {
-    // Users see only their assigned work orders
+    // Kullanıcılar sadece kendilerine atanan iş emirlerini görür
     query = query.eq('assigned_user_id', user.id)
   } else if (userId) {
-    // Admin can filter by user
+    // Admin kullanıcıya göre filtreleyebilir
     query = query.eq('assigned_user_id', userId)
   }
 
@@ -127,7 +127,7 @@ export async function getWorkOrder(workOrderId: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -156,7 +156,7 @@ export async function getWorkOrder(workOrderId: string) {
 
   // Check authorization
   if (profile?.role !== 'admin' && workOrder.assigned_user_id !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   return { data: workOrder }
@@ -171,7 +171,7 @@ export async function updateWorkOrderStatus(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: workOrder } = await supabase
@@ -181,7 +181,7 @@ export async function updateWorkOrderStatus(
     .single()
 
   if (!workOrder) {
-    return { error: 'Work order not found' }
+    return { error: 'İş emri bulunamadı' }
   }
 
   const { data: profile } = await supabase
@@ -190,9 +190,9 @@ export async function updateWorkOrderStatus(
     .eq('id', user.id)
     .single()
 
-  // Only assigned user or admin can update status
+  // Sadece atanan kullanıcı veya admin durumu güncelleyebilir
   if (profile?.role !== 'admin' && workOrder.assigned_user_id !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const updateData: any = {
@@ -222,7 +222,7 @@ export async function updateWorkOrderStatus(
     return { error: error.message }
   }
 
-  // Send notification to admin when status changes
+  // Durum değiştiğinde admin'e bildirim gönder
   if (status === 'in-progress' || status === 'completed') {
     try {
       const { data: admins } = await supabase
@@ -261,8 +261,8 @@ export async function updateWorkOrderStatus(
         }
       }
     } catch (notificationError) {
-      console.error('Admin notification error:', notificationError)
-      // Don't fail the status update if notification fails
+      console.error('Admin bildirim hatası:', notificationError)
+      // Bildirim başarısız olsa bile durum güncellemesini başarısız yapma
     }
   }
 
@@ -280,7 +280,7 @@ export async function addWorkOrderMaterial(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: workOrder } = await supabase
@@ -290,7 +290,7 @@ export async function addWorkOrderMaterial(
     .single()
 
   if (!workOrder) {
-    return { error: 'Work order not found' }
+    return { error: 'İş emri bulunamadı' }
   }
 
   const { data: profile } = await supabase
@@ -299,9 +299,9 @@ export async function addWorkOrderMaterial(
     .eq('id', user.id)
     .single()
 
-  // Only assigned user or admin can add materials
+  // Sadece atanan kullanıcı veya admin malzeme ekleyebilir
   if (profile?.role !== 'admin' && workOrder.assigned_user_id !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -319,7 +319,7 @@ export async function addWorkOrderMaterial(
     return { error: error.message }
   }
 
-  // Update product quantity in depot
+  // Depodaki ürün miktarını güncelle
   const { data: product } = await supabase
     .from('products')
     .select('quantity')
@@ -346,7 +346,7 @@ export async function uploadWorkOrderPhoto(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: workOrder } = await supabase
@@ -356,7 +356,7 @@ export async function uploadWorkOrderPhoto(
     .single()
 
   if (!workOrder) {
-    return { error: 'Work order not found' }
+    return { error: 'İş emri bulunamadı' }
   }
 
   const { data: profile } = await supabase
@@ -365,9 +365,9 @@ export async function uploadWorkOrderPhoto(
     .eq('id', user.id)
     .single()
 
-  // Only assigned user or admin can upload photos
+  // Sadece atanan kullanıcı veya admin fotoğraf yükleyebilir
   if (profile?.role !== 'admin' && workOrder.assigned_user_id !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -397,7 +397,7 @@ export async function addWorkOrderSignature(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: workOrder } = await supabase
@@ -407,7 +407,7 @@ export async function addWorkOrderSignature(
     .single()
 
   if (!workOrder) {
-    return { error: 'Work order not found' }
+    return { error: 'İş emri bulunamadı' }
   }
 
   const { data: profile } = await supabase
@@ -416,11 +416,11 @@ export async function addWorkOrderSignature(
     .eq('id', user.id)
     .single()
 
-  // Employee signature: only assigned user or admin
-  // Customer signature: anyone (will be done on device)
+  // Çalışan imzası: sadece atanan kullanıcı veya admin
+  // Müşteri imzası: herkes (cihazda yapılacak)
   if (signerType === 'employee') {
     if (profile?.role !== 'admin' && workOrder.assigned_user_id !== user.id) {
-      return { error: 'Unauthorized' }
+      return { error: 'Yetkiniz bulunmamaktadır' }
     }
   }
 

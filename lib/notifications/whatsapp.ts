@@ -1,5 +1,5 @@
-// WhatsApp notification service
-// This will integrate with WhatsApp API in the future
+// WhatsApp bildirim servisi
+// Gelecekte WhatsApp API ile entegre edilecek
 
 export async function sendWhatsAppMessage(
   phone: string,
@@ -12,12 +12,12 @@ export async function sendWhatsAppMessage(
   const whatsappApiKey = process.env.WHATSAPP_API_KEY
 
   if (!whatsappApiUrl || !whatsappApiKey) {
-    console.warn('WhatsApp API not configured')
-    return { success: false, error: 'WhatsApp API not configured' }
+    console.warn('WhatsApp API yapılandırılmamış')
+    return { success: false, error: 'WhatsApp API yapılandırılmamış' }
   }
 
   try {
-    // Format phone number (remove +, spaces, etc.)
+    // Telefon numarasını formatla (+, boşluk vb. kaldır)
     const formattedPhone = phone.replace(/[^0-9]/g, '')
     
     const response = await fetch(whatsappApiUrl, {
@@ -33,15 +33,15 @@ export async function sendWhatsAppMessage(
     })
 
     if (!response.ok) {
-      throw new Error(`WhatsApp API error: ${response.statusText}`)
+      throw new Error(`WhatsApp API hatası: ${response.statusText}`)
     }
 
     return { success: true }
   } catch (error) {
-    console.error('WhatsApp notification error:', error)
+    console.error('WhatsApp bildirim hatası:', error)
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+      error: error instanceof Error ? error.message : 'Bilinmeyen hata' 
     }
   }
 }

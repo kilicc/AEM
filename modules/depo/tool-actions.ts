@@ -8,7 +8,7 @@ export async function assignTool(toolId: string, userId: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -19,7 +19,7 @@ export async function assignTool(toolId: string, userId: string) {
 
   // Admin can assign, user can also assign to themselves
   if (profile?.role !== 'admin' && user.id !== userId) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   // Check if tool is available (not already assigned and not returned)
@@ -31,7 +31,7 @@ export async function assignTool(toolId: string, userId: string) {
     .single()
 
   if (existingAssignment) {
-    return { error: 'Tool is already assigned' }
+    return { error: 'Bu araç/gereç zaten zimmetli' }
   }
 
   const { data, error } = await supabase
@@ -57,7 +57,7 @@ export async function returnTool(assignmentId: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: assignment } = await supabase
@@ -67,7 +67,7 @@ export async function returnTool(assignmentId: string) {
     .single()
 
   if (!assignment) {
-    return { error: 'Assignment not found' }
+    return { error: 'Zimmet kaydı bulunamadı' }
   }
 
   const { data: profile } = await supabase
@@ -78,7 +78,7 @@ export async function returnTool(assignmentId: string) {
 
   // Admin or the assigned user can return
   if (profile?.role !== 'admin' && assignment.user_id !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -104,7 +104,7 @@ export async function getUserToolAssignments(userId?: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const targetUserId = userId || user.id
@@ -117,7 +117,7 @@ export async function getUserToolAssignments(userId?: string) {
 
   // Users can only see their own assignments, admins can see all
   if (profile?.role !== 'admin' && targetUserId !== user.id) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase

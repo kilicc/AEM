@@ -12,7 +12,7 @@ export async function createService(data: {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -22,7 +22,7 @@ export async function createService(data: {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: service, error } = await supabase
@@ -62,7 +62,7 @@ export async function getUsers() {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -72,7 +72,7 @@ export async function getUsers() {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase

@@ -9,7 +9,7 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -19,10 +19,10 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
-  // Get work order with all related data
+  // İş emrini tüm ilişkili verilerle al
   const { data: workOrder, error: workOrderError } = await supabase
     .from('work_orders')
     .select(`
@@ -34,14 +34,14 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
     .single()
 
   if (workOrderError || !workOrder) {
-    return { error: 'Work order not found' }
+    return { error: 'İş emri bulunamadı' }
   }
 
   if (workOrder.status !== 'completed') {
-    return { error: 'Work order must be completed to create invoice' }
+    return { error: 'Fatura oluşturmak için iş emri tamamlanmış olmalıdır' }
   }
 
-  // Check if invoice already exists
+  // Fatura zaten var mı kontrol et
   const { data: existingInvoice } = await supabase
     .from('invoices')
     .select('id')
@@ -49,10 +49,10 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
     .single()
 
   if (existingInvoice) {
-    return { error: 'Invoice already exists for this work order' }
+    return { error: 'Bu iş emri için zaten bir fatura mevcut' }
   }
 
-  // Calculate totals
+  // Toplamları hesapla
   let subtotal = 0
   const items = workOrder.work_order_materials || []
 
@@ -60,14 +60,14 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
     subtotal += Number(item.quantity) * Number(item.unit_price)
   })
 
-  const taxRate = 0.20 // 20% KDV
+  const taxRate = 0.20 // %20 KDV
   const taxAmount = subtotal * taxRate
   const totalAmount = subtotal + taxAmount
 
-  // Generate invoice number
+  // Fatura numarası oluştur
   const invoiceNumber = `INV-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
 
-  // Create invoice
+  // Fatura oluştur
   const { data: invoice, error: invoiceError } = await supabase
     .from('invoices')
     .insert({
@@ -87,7 +87,7 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
     return { error: invoiceError.message }
   }
 
-  // Create invoice items
+  // Fatura kalemlerini oluştur
   const invoiceItems = items.map((item: any) => ({
     invoice_id: invoice.id,
     product_name: item.products?.name || 'Unknown',
@@ -114,7 +114,7 @@ export async function getInvoices() {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -124,7 +124,7 @@ export async function getInvoices() {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -144,7 +144,7 @@ export async function getInvoice(invoiceId: string) {
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -154,7 +154,7 @@ export async function getInvoice(invoiceId: string) {
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
@@ -178,7 +178,7 @@ export async function updateInvoiceStatus(
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data: profile } = await supabase
@@ -188,7 +188,7 @@ export async function updateInvoiceStatus(
     .single()
 
   if (profile?.role !== 'admin') {
-    return { error: 'Unauthorized' }
+    return { error: 'Yetkiniz bulunmamaktadır' }
   }
 
   const { data, error } = await supabase
